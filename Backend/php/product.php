@@ -1,137 +1,97 @@
 <?php
-// Database connection
-function connectDB() {
-    // Replace with your actual database credentials
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "ecokart";
-    
-    // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-    
-    return $conn;
-}
+require_once 'db.php';
 
-// Function to get all products
-function getAllProducts() {
-    $conn = connectDB();
-    $products = [];
-    
-    $sql = "SELECT * FROM products ORDER BY category, name";
-    $result = $conn->query($sql);
-    
-    if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
-            $products[] = $row;
-        }
-    }
-    
-    $conn->close();
-    return $products;
-}
-
-// Function to get products by category
-function getProductsByCategory($category) {
-    $conn = connectDB();
-    $products = [];
-    
-    $stmt = $conn->prepare("SELECT * FROM products WHERE category = ? ORDER BY name");
-    $stmt->bind_param("s", $category);
+// Function to get product by ID
+function getProductById($id) {
+    global $conn;
+    $stmt = $conn->prepare("SELECT * FROM products WHERE id = ?");
+    $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
-    
-    if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
-            $products[] = $row;
-        }
-    }
-    
+    $product = $result->fetch_assoc();
     $stmt->close();
-    $conn->close();
-    return $products;
+    return $product;
 }
 
-// Function to get products with filters
-function getFilteredProducts($category = null, $farming_method = null) {
-    $conn = connectDB();
-    $products = [];
+// Function to get filtered products
+function getFilteredProducts($filters = []) {
+    global $conn;
     
-    // Build the query based on filters
     $sql = "SELECT * FROM products WHERE 1=1";
     $params = [];
     $types = "";
     
-    if ($category) {
-        $sql .= " AND category = ?";
-        $params[] = $category;
-        $types .= "s";
+    if (!empty($filters['categories'])) {
+        $sql .= " AND category IN (" . str_repeat("?,", count($filters['categories']) - 1) . "?)";
+        $params = array_merge($params, $filters['categories']);
+        $types .= str_repeat("s", count($filters['categories']));
     }
     
-    if ($farming_method) {
-        $sql .= " AND farming_method = ?";
-        $params[] = $farming_method;
-        $types .= "s";
+    if (!empty($filters['farming_methods'])) {
+        $sql .= " AND farming_method IN (" . str_repeat("?,", count($filters['farming_methods']) - 1) . "?)";
+        $params = array_merge($params, $filters['farming_methods']);
+        $types .= str_repeat("s", count($filters['farming_methods']));
     }
     
-    $sql .= " ORDER BY category, name";
+    if (!empty($filters['price_min'])) {
+        $sql .= " AND price >= ?";
+        $params[] = $filters['price_min'];
+        $types .= "d";
+    }
+    
+    if (!empty($filters['price_max'])) {
+        $sql .= " AND price <= ?";
+        $params[] = $filters['price_max'];
+        $types .= "d";
+    }
+    
+    $sql .= " ORDER BY name ASC";
     
     $stmt = $conn->prepare($sql);
-    
     if (!empty($params)) {
         $stmt->bind_param($types, ...$params);
     }
     
     $stmt->execute();
     $result = $stmt->get_result();
-    
-    if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
-            $products[] = $row;
-        }
-    }
-    
+    $products = $result->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
-    $conn->close();
+    
     return $products;
 }
 
-// AJAX handler
+// Handle AJAX requests
 if (isset($_GET['action'])) {
     header('Content-Type: application/json');
     
-    switch ($_GET['action']) {
-        case 'get_all_products':
-            echo json_encode(getAllProducts());
-            break;
-            
-        case 'get_products_by_category':
-            if (isset($_GET['category'])) {
-                echo json_encode(getProductsByCategory($_GET['category']));
-            } else {
-                echo json_encode(['error' => 'Category parameter is required']);
-            }
-            break;
-            
-        case 'get_filtered_products':
-            $category = isset($_GET['category']) ? $_GET['category'] : null;
-            $farming_method = isset($_GET['farming_method']) ? $_GET['farming_method'] : null;
-            
-            echo json_encode(getFilteredProducts($category, $farming_method));
-            break;
-            
-        default:
-            echo json_encode(['error' => 'Invalid action']);
+    try {
+        switch ($_GET['action']) {
+            case 'get_product':
+                $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+                if (!$id) {
+                    throw new Exception('Invalid product ID');
+                }
+                $product = getProductById($id);
+                echo json_encode(['success' => true, 'data' => $product]);
+                break;
+                
+            case 'get_filtered':
+                $filters = [
+                    'categories' => $_GET['categories'] ?? [],
+                    'farming_methods' => $_GET['farming_methods'] ?? [],
+                    'price_min' => $_GET['price_min'] ?? null,
+                    'price_max' => $_GET['price_max'] ?? null
+                ];
+                $products = getFilteredProducts($filters);
+                echo json_encode(['success' => true, 'data' => $products]);
+                break;
+                
+            default:
+                throw new Exception('Invalid action');
+        }
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
-    
     exit;
 }
-
-// Include the HTML template if accessed directly
-include_once('../../Frontend/Html/products.html');
 ?>

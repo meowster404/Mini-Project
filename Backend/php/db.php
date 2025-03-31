@@ -2,23 +2,27 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
+$dbname = "ecokart"; // Standardized database name
 
-// Create connection without database
-$conn = mysqli_connect($servername, $username, $password);
+try {
+    // Create connection
+    $conn = new mysqli($servername, $username, $password);
 
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+    if ($conn->connect_error) {
+        throw new Exception("Connection failed: " . $conn->connect_error);
+    }
+
+    // Create database if it doesn't exist
+    $sql = "CREATE DATABASE IF NOT EXISTS $dbname";
+    if (!$conn->query($sql)) {
+        throw new Exception("Error creating database: " . $conn->error);
+    }
+
+    // Select the database
+    $conn->select_db($dbname);
+    $conn->set_charset("utf8mb4"); // Better character encoding support
+
+} catch (Exception $e) {
+    die("Database Error: " . $e->getMessage());
 }
-
-// Create database if it doesn't exist
-$sql = "CREATE DATABASE IF NOT EXISTS farm_fresh_market";
-if (!mysqli_query($conn, $sql)) {
-    die("Error creating database: " . mysqli_error($conn));
-}
-
-// Select the database
-$dbname = "farm_fresh_market";
-mysqli_select_db($conn, $dbname);
-
-mysqli_set_charset($conn, "utf8");
 ?>

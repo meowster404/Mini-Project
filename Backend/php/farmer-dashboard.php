@@ -1,36 +1,159 @@
 <?php
-// Start session for potential user authentication
+// Start session and set secure headers
 session_start();
+header("X-Frame-Options: DENY");
+header("X-XSS-Protection: 1; mode=block");
+header("X-Content-Type-Options: nosniff");
 
 // Include database connection and functions
-require_once 'includes/config.php';
+require_once 'db.php';
 require_once 'includes/functions.php';
 
-// Check if user is logged in (simplified version)
-if(!isset($_SESSION['farmer_id'])) {
+// Strong authentication check
+if (!isset($_SESSION['farmer_id']) || !isset($_SESSION['csrf_token'])) {
     header("Location: login.php");
     exit();
 }
 
-// Get farmer info
-$farmer_id = $_SESSION['farmer_id'];
-$farmer = getFarmerById($farmer_id);
+// Initialize error handling
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_log', 'error.log');
 
-// Get dashboard stats
-$stats = getDashboardStats($farmer_id);
+try {
+    // Get farmer info with prepared statement
+    $farmer_id = filter_var($_SESSION['farmer_id'], FILTER_SANITIZE_NUMBER_INT);
+    $stmt = $conn->prepare("SELECT * FROM farmers WHERE id = ?");
+    $stmt->bind_param("i", $farmer_id);
+    $stmt->execute();
+    $farmer = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
 
-// Get recent orders (limit to 5)
-$recentOrders = getRecentOrders($farmer_id, 5);
+    if (!$farmer) {
+        throw new Exception("Farmer not found");
+    }
 
-// Get farmer products
-$products = getFarmerProducts($farmer_id);
+    // Get dashboard stats using prepared statements
+    $stats = [
+        'total_sales' => 0,
+        'total_orders' => 0,
+        'total_products' => 0,
+        'total_customers' => 0,
+        'sales_change' => 0,
+        'orders_change' => 0,
+        'new_products' => 0,
+        'new_customers' => 0,
+        'orders_this_month' => 0,
+        'unread_notifications' => 0
+    ];
+
+    // Get recent orders with prepared statement
+    $stmt = $conn->prepare("
+        SELECT o.*, c.name as customer_name 
+        FROM orders o 
+        JOIN customers c ON o.customer_id = c.id 
+        WHERE o.farmer_id = ? 
+        ORDER BY o.order_date DESC 
+        LIMIT 5
+    ");
+    $stmt->bind_param("i", $farmer_id);
+    $stmt->execute();
+    $recentOrders = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    $stmt->close();
+
+    // Get farmer products from dummy data
+    $jsonFile = file_get_contents('../../Frontend/js/dummy-data.js');
+    $pattern = '/const productData = (.+?);/s';
+    preg_match($pattern, $jsonFile, $matches);
+    $products = json_decode($matches[1], true);
+
+    // Filter products for current farmer
+    $products = array_filter($products, function($product) use ($farmer_id) {
+        return $product['farmer_id'] == $farmer_id;
+    });
+
+    // Update product stats
+    $stats['total_products'] = count($products);
+    $stats['new_products'] = array_reduce($products, function($carry, $product) use ($current_month) {
+        return $carry + (date('Y-m', strtotime($product['created_at'])) === $current_month ? 1 : 0);
+    }, 0);
+
+    // Get total sales and orders
+    $stmt = $conn->prepare("
+        SELECT 
+            COUNT(*) as total_orders,
+            SUM(total_amount) as total_sales,
+            SUM(CASE WHEN DATE_FORMAT(order_date, '%Y-%m') = ? THEN 1 ELSE 0 END) as orders_this_month,
+            SUM(CASE WHEN DATE_FORMAT(order_date, '%Y-%m') = ? THEN total_amount ELSE 0 END) as sales_this_month,
+            SUM(CASE WHEN DATE_FORMAT(order_date, '%Y-%m') = ? THEN total_amount ELSE 0 END) as sales_last_month
+        FROM orders 
+        WHERE farmer_id = ?
+    ");
+    $stmt->bind_param("sssi", $current_month, $current_month, $last_month, $farmer_id);
+    $stmt->execute();
+    $result = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    // Calculate stats
+    $stats = [
+        'total_sales' => $result['total_sales'] ?? 0,
+        'total_orders' => $result['total_orders'] ?? 0,
+        'orders_this_month' => $result['orders_this_month'] ?? 0,
+        'sales_change' => 0
+    ];
+
+    // Calculate sales change percentage
+    if ($result['sales_last_month'] > 0) {
+        $stats['sales_change'] = round((($result['sales_this_month'] - $result['sales_last_month']) / $result['sales_last_month']) * 100);
+    }
+
+    // Get product stats
+    $stmt = $conn->prepare("
+        SELECT 
+            COUNT(*) as total_products,
+            SUM(CASE WHEN DATE_FORMAT(created_at, '%Y-%m') = ? THEN 1 ELSE 0 END) as new_products
+        FROM products 
+        WHERE farmer_id = ?
+    ");
+    $stmt->bind_param("si", $current_month, $farmer_id);
+    $stmt->execute();
+    $product_stats = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    $stats['total_products'] = $product_stats['total_products'] ?? 0;
+    $stats['new_products'] = $product_stats['new_products'] ?? 0;
+
+    // Get customer stats
+    $stmt = $conn->prepare("
+        SELECT 
+            COUNT(DISTINCT customer_id) as total_customers,
+            COUNT(DISTINCT CASE WHEN DATE_FORMAT(order_date, '%Y-%m') = ? THEN customer_id END) as new_customers
+        FROM orders 
+        WHERE farmer_id = ?
+    ");
+    $stmt->bind_param("si", $current_month, $farmer_id);
+    $stmt->execute();
+    $customer_stats = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+
+    $stats['total_customers'] = $customer_stats['total_customers'] ?? 0;
+    $stats['new_customers'] = $customer_stats['new_customers'] ?? 0;
+
+} catch (Exception $e) {
+    error_log("Error in farmer dashboard: " . $e->getMessage());
+    $error_message = "An error occurred. Please try again later.";
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farm Fresh - Farmer Dashboard</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="csrf-token" content="<?php echo $_SESSION['csrf_token']; ?>">
+    <title>EcoKart - Farmer Dashboard</title>
     <link rel="stylesheet" href="../css/farmer-dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -222,6 +345,7 @@ $products = getFarmerProducts($farmer_id);
             </div>
             <div class="modal-body">
                 <form id="addProductForm" action="includes/process_product.php" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                     <div class="form-group">
                         <label for="productName">Product Name</label>
                         <input type="text" id="productName" name="productName" required>
@@ -235,10 +359,16 @@ $products = getFarmerProducts($farmer_id);
                         <select id="productCategory" name="productCategory">
                             <option value="">Select a category</option>
                             <?php
-                            $categories = getProductCategories();
+                            $categories = [
+                                ['id' => 'vegetables', 'name' => 'Vegetables'],
+                                ['id' => 'fruits', 'name' => 'Fruits'],
+                                ['id' => 'dairy', 'name' => 'Dairy'],
+                                ['id' => 'meat', 'name' => 'Meat'],
+                                ['id' => 'grains', 'name' => 'Grains']
+                            ];
                             foreach($categories as $category):
                             ?>
-                                <option value="<?php echo $category['id']; ?>"><?php echo htmlspecialchars($category['name']); ?></option>
+                                <option value="<?php echo htmlspecialchars($category['id']); ?>"><?php echo htmlspecialchars($category['name']); ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -291,5 +421,28 @@ $products = getFarmerProducts($farmer_id);
     <div class="overlay" id="overlay"></div>
 
     <script src="assets/js/dashboard.js"></script>
+</body>
+</html>
+
+    // Add CSRF token to all AJAX requests
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Sanitize data before displaying
+        function sanitizeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+    
+        // Add error handling for AJAX requests
+        function handleAjaxError(error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again later.');
+        }
+    
+        // ... Rest of your JavaScript code ...
+        });
+    </script>
 </body>
 </html>

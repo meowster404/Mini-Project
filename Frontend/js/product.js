@@ -1,3 +1,4 @@
+import { dummyProducts } from './dummyProducts.js';
 /**
  * EcoKart Product Page JavaScript
  * This file handles all the interactive functionality of the product page
@@ -87,36 +88,101 @@ function setupEventListeners() {
             filterProducts(filters);
         });
     }
+    
+    // Search form
+    const searchForm = document.getElementById('search-form');
+    const searchInput = document.getElementById('search-input');
+    
+    if (searchForm && searchInput) {
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const filters = buildFiltersObject();
+            filters.search = searchTerm;
+            fetchProducts(filters);
+        });
+
+        // Real-time search
+        searchInput.addEventListener('input', debounce(function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            if (searchTerm.length >= 2 || searchTerm.length === 0) {
+                const filters = buildFiltersObject();
+                filters.search = searchTerm;
+                fetchProducts(filters);
+            }
+        }, 300));
+    }
+
+    // Category checkboxes
+    document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const filters = buildFiltersObject();
+            fetchProducts(filters);
+        });
+    });
+
+    // Farming method checkboxes
+    document.querySelectorAll('.farming-method-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const filters = buildFiltersObject();
+            fetchProducts(filters);
+        });
+    });
+
+    // Sorting
+    const sortSelect = document.querySelector('.sort-select');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            const filters = buildFiltersObject();
+            fetchProducts(filters);
+        });
+    }
 }
 
-/**
- * Build filters object from form inputs
- */
+// Add debounce function to prevent too many requests
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Update buildFiltersObject function
 function buildFiltersObject() {
     const filters = {};
     
-    // Categories
-    const selectedCategories = [];
-    categoryCheckboxes.forEach(checkbox => {
-        if (checkbox.checked) {
-            selectedCategories.push(checkbox.value);
+    // Get search term
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        if (searchTerm) {
+            filters.search = searchTerm;
         }
-    });
+    }
     
+    // Get selected categories
+    const selectedCategories = Array.from(document.querySelectorAll('.category-checkbox:checked'))
+        .map(checkbox => checkbox.value);
     if (selectedCategories.length > 0) {
         filters.categories = selectedCategories;
     }
     
-    // Farming methods
-    const selectedMethods = [];
-    farmingMethodCheckboxes.forEach(checkbox => {
-        if (checkbox.checked) {
-            selectedMethods.push(checkbox.value);
-        }
-    });
-    
+    // Get selected farming methods
+    const selectedMethods = Array.from(document.querySelectorAll('.farming-method-checkbox:checked'))
+        .map(checkbox => checkbox.value);
     if (selectedMethods.length > 0) {
         filters.farmingMethods = selectedMethods;
+    }
+    
+    // Get sorting option
+    const sortSelect = document.querySelector('.sort-select');
+    if (sortSelect) {
+        filters.sortBy = sortSelect.value;
     }
     
     return filters;
@@ -133,51 +199,47 @@ function fetchProducts(filters = {}) {
             <p>Loading products...</p>
         </div>
     `;
-    
-    // Build query string from filters
-    let queryString = '?action=get_all_products';
-    
-    if (filters.category) {
-        queryString = `?action=get_products_by_category&category=${filters.category}`;
-    } else if (Object.keys(filters).length > 0) {
-        queryString = '?action=get_filtered_products';
+
+    // Use the dummyProducts data
+    setTimeout(() => {
+        filteredProducts = [...dummyProducts];
         
-        if (filters.categories && filters.categories.length > 0) {
-            queryString += `&category=${filters.categories.join(',')}`;
-        }
-        
-        if (filters.farmingMethods && filters.farmingMethods.length > 0) {
-            queryString += `&farming_method=${filters.farmingMethods.join(',')}`;
-        }
-    }
-    
-    // Make AJAX request
-    fetch(`../php/product.php${queryString}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+        // Apply filters
+        if (Object.keys(filters).length > 0) {
+            if (filters.search) {
+                const searchTerm = filters.search.toLowerCase();
+                filteredProducts = filteredProducts.filter(product => 
+                    product.name.toLowerCase().includes(searchTerm) ||
+                    product.description.toLowerCase().includes(searchTerm) ||
+                    product.category.toLowerCase().includes(searchTerm) ||
+                    product.farm_name.toLowerCase().includes(searchTerm)
+                );
             }
-            return response.json();
-        })
-        .then(data => {
-            allProducts = data;
-            filteredProducts = [...allProducts];
             
-            // Sort products by default sorting option
-            const defaultSort = document.querySelector('.sort-select').value;
-            sortProducts(defaultSort);
+            if (filters.categories && filters.categories.length > 0) {
+                filteredProducts = filteredProducts.filter(product =>
+                    filters.categories.includes(product.category)
+                );
+            }
             
-            // Render products
-            renderProducts(filteredProducts);
-        })
-        .catch(error => {
-            console.error('Error fetching products:', error);
-            productsContainer.innerHTML = `
-                <div class="no-products">
-                    <p>Error loading products. Please try again later.</p>
-                </div>
-            `;
-        });
+            if (filters.farmingMethods && filters.farmingMethods.length > 0) {
+                filteredProducts = filteredProducts.filter(product =>
+                    filters.farmingMethods.includes(product.farming_method)
+                );
+            }
+        }
+
+        // Sort products
+        const sortSelect = document.querySelector('.sort-select');
+        const currentSort = sortSelect ? sortSelect.value : 'popularity';
+        sortProducts(currentSort);
+        
+        // Update results count
+        updateResultsCount(filteredProducts.length);
+        
+        // Render products
+        renderProducts(filteredProducts);
+    }, 500);
 }
 
 /**
@@ -209,11 +271,27 @@ function filterProducts(filters) {
     });
     
     // Sort products by current sorting option
-    const currentSort = document.querySelector('.sort-select').value;
+    const sortSelect = document.querySelector('.sort-select');
+    const currentSort = sortSelect ? sortSelect.value : 'popularity';
     sortProducts(currentSort);
     
     // Render filtered products
     renderProducts(filteredProducts);
+
+    // Update results count
+    updateResultsCount(filteredProducts.length);
+}
+
+/**
+ * Update results count display
+ */
+function updateResultsCount(count) {
+    const productsTitle = document.querySelector('.products-title');
+    if (productsTitle) {
+        productsTitle.textContent = count === 0 
+            ? 'No products found' 
+            : `${count} Product${count !== 1 ? 's' : ''} found`;
+    }
 }
 
 /**
@@ -305,7 +383,7 @@ function createProductCard(product) {
                         <button class="quantity-btn increase-quantity" data-product-id="${product.id}">+</button>
                     </div>
                     <div class="cart-actions">
-                        <a href="../../Backend/php/cart.php" class="view-cart-btn">View Cart</a>
+                        <a href="/cart.php" class="view-cart-btn">View Cart</a>
                     </div>
                 </div>
             </div>
@@ -366,56 +444,86 @@ function addProductCardEventListeners() {
     
     // View cart buttons
     const viewCartButtons = document.querySelectorAll('.view-cart-btn');
-    // In addProductCardEventListeners function
     viewCartButtons.forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.preventDefault();
-        window.location.href = '../../Backend/php/cart.php';
-    });
-    });
-    
-    // In addToCart function
-    fetch('../../Backend/php/cart.php', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'  // Change content type
-    },
-    body: `action=add&product_id=${productId}&quantity=1`    // Change body format
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update local cart data
-            const existingItem = cart.find(item => item.id == productId);
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    image: product.image,
-                    quantity: 1
-                });
-            }
-            
-            saveCart();
-            updateCartCount();
-            renderProducts(filteredProducts);
-            
-            // Optional: Redirect to cart page
-            window.location.href = '../../Backend/php/cart.php';
-        } else {
-            alert('Failed to add product to cart. Please try again.');
-        }
-    })
-    .catch(error => {
-        console.error('Error adding to cart:', error);
-        alert('An error occurred while adding to cart. Please try again.');
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '/cart.php';
+        });
     });
 }
 
-// Also update updateCartItemQuantity function
+/**
+ * Add product to cart
+ */
+function addToCart(productId) {
+    if (!productId) {
+        console.error('Invalid product ID');
+        return;
+    }
+    
+    // Find the product in our products array
+    const product = filteredProducts.find(p => p.id == productId);
+    if (!product) {
+        console.error('Product not found:', productId);
+        return;
+    }
+    
+    // Check if product is already in cart
+    const existingItem = cart.find(item => item.id == productId);
+    
+    if (existingItem) {
+        // Update quantity if already in cart
+        updateCartItemQuantity(productId, 1);
+    } else {
+        // Add new item to cart
+        cart.push({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            quantity: 1
+        });
+        
+        // Save cart and update UI
+        saveCart();
+        updateCartCount();
+        renderProducts(filteredProducts);
+        showNotification('Product added to cart successfully!', 'success');
+    }
+    
+    // Optional: Send to server
+    const formData = new URLSearchParams();
+    formData.append('action', 'add');
+    formData.append('product_id', productId);
+    formData.append('quantity', 1);
+    
+    fetch('/cart.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (!data.success) {
+            throw new Error(data.message || 'Failed to add product to cart');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Continue with local cart regardless of server response
+    });
+}
+
+/**
+ * Update cart item quantity
+ */
 function updateCartItemQuantity(productId, change) {
     const cartItem = cart.find(item => item.id == productId);
     
@@ -425,36 +533,34 @@ function updateCartItemQuantity(productId, change) {
     }
     
     const newQuantity = cartItem.quantity + change;
-    if (newQuantity < 1) return;
     
-    fetch('../../Backend/php/cart.php', {
+    // Remove item if quantity is less than 1
+    if (newQuantity < 1) {
+        cart = cart.filter(item => item.id != productId);
+        saveCart();
+        updateCartCount();
+        renderProducts(filteredProducts);
+        showNotification('Product removed from cart', 'info');
+        return;
+    }
+    
+    // Update quantity
+    cartItem.quantity = newQuantity;
+    saveCart();
+    updateCartCount();
+    renderProducts(filteredProducts);
+    
+    // Optional: Send to server
+    fetch('/cart.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: `action=update&product_id=${productId}&quantity=${newQuantity}`
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Update local cart data
-            cartItem.quantity = newQuantity;
-            
-            // Save cart to localStorage
-            saveCart();
-            
-            // Update cart count
-            updateCartCount();
-            
-            // Re-render products to update UI
-            renderProducts(filteredProducts);
-        } else {
-            alert('Failed to update cart. Please try again.');
-        }
-    })
     .catch(error => {
-        console.error('Error updating cart:', error);
-        alert('An error occurred while updating cart. Please try again.');
+        console.error('Error updating cart on server:', error);
+        // Continue with local cart regardless of server response
     });
 }
 
@@ -462,8 +568,25 @@ function updateCartItemQuantity(productId, change) {
  * Update the cart count display
  */
 function updateCartCount() {
-    const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-    cartCountElement.textContent = totalItems;
+    if (cartCountElement) {
+        const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+        cartCountElement.textContent = totalItems;
+    }
+}
+
+/**
+ * Show notification message
+ */
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
 }
 
 /**
@@ -481,103 +604,4 @@ function loadCart() {
     if (savedCart) {
         cart = JSON.parse(savedCart);
     }
-}
-
-/**
- * Generate sample product data (for testing without database)
- * This function is used only for development and should be removed in production
- */
-
-function generateSampleProducts() {
-    return [
-        {
-            id: 1,
-            name: 'Fresh Tomatoes',
-            description: 'Juicy, ripe tomatoes picked fresh from the vine.',
-            price: 40,
-            weight: 1,
-            image: '/placeholder.svg',
-            category: 'fruits',
-            is_organic: true,
-            discount: 0,
-            farming_method: 'organic',
-            image: '/placeholder.svg',
-            category: 'vegetables',
-            is_organic: true,
-            discount: 0,
-            farming_method: 'organic'
-        },
-        {
-            id: 2,
-            name: "Golden Bananas",
-            description: "Sweet and delicious bananas, rich in potassium.",
-            price: 50,
-            weight: 1,
-            image: "/placeholder.svg",
-            category: "fruits",
-            is_organic: true,
-            discount: 10,
-            farming_method: "organic"
-        },
-        {
-            id: 3,
-            name: "Fresh Carrots",
-            description: "Crunchy and nutritious carrots, perfect for salads.",
-            price: 35,
-            weight: 1,
-            image: "/placeholder.svg",
-            category: "vegetables",
-            is_organic: false,
-            discount: 5,
-            farming_method: "conventional"
-        },
-        {
-            id: 4,
-            name: "Free-Range Eggs",
-            description: "Healthy and protein-rich eggs from free-range hens.",
-            price: 120,
-            weight: 12,
-            image: "/placeholder.svg",
-            category: "eggs",
-            is_organic: true,
-            discount: 0,
-            farming_method: "free-range"
-        },
-        {
-            id: 5,
-            name: "Fresh Chicken Meat",
-            description: "Tender and high-quality farm-raised chicken.",
-            price: 250,
-            weight: 1,
-            image: "/placeholder.svg",
-            category: "meat",
-            is_organic: false,
-            discount: 15,
-            farming_method: "conventional"
-        }
-    ]
-}
-
-// Load sample products
-function fetchProducts(filters = {}) {
-    // Show loading indicator
-    productsContainer.innerHTML = `
-        <div class="loading">
-            <div class="loading-spinner"></div>
-            <p>Loading products...</p>
-        </div>
-    `;
-
-    // Load sample data instead of fetching from the server
-    setTimeout(() => {
-        allProducts = generateSampleProducts();
-        filteredProducts = [...allProducts];
-
-        // Sort products by default sorting option
-        const defaultSort = document.querySelector('.sort-select')?.value || 'popularity';
-        sortProducts(defaultSort);
-
-        // Render products
-        renderProducts(filteredProducts);
-    }, 500); // Simulating delay for better UX
 }

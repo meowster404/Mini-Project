@@ -146,12 +146,29 @@ header {
 }
 /* Sidebar Styles */
 
-.sidebar {  
+/* Update the sidebar styles */
+.sidebar {
     width: 250px;
     margin-right: var(--spacing-xl);
-    position: fixed;
+    position: sticky;
+    top: 80px; /* Adjust based on your header height */
     height: calc(100vh - 80px);
-    overflow: hidden; /* Remove scrollbar */
+    overflow-y: auto;
+}
+
+/* Update the products section styles */
+.products-section {
+    flex: 1;
+    margin-left: 0; /* Remove the margin-left */
+    min-height: auto; /* Remove fixed height */
+}
+
+/* Update main content styles */
+.main-content {
+    display: flex;
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
 }
 
 /* Filter Section */
