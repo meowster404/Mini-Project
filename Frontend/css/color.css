@@ -1,0 +1,56 @@
+:root {
+    /* Base Colors */
+    --white: #FFFFFF;
+    --linen: #FAF0E6;
+    --light-gray: #f5f7fa;
+    --medium-gray: #e5e9f0;
+    --dark-gray: #4c566a;
+    --black: #000000;
+    --text-color: #2e3440;
+    --text-dark: #333333;
+    
+    /* Primary Palette */
+    --primary-color: #18a558;
+    --primary-light: #d1f1e0;
+    --lime-green: #7CAA2D;
+    --field-drab: #5A5D2F;
+    
+    /* Secondary Palette */
+    --secondary-color: #3a506b;
+    --accent-color: #ff6b6b;
+    --selective-yellow: #FFBA08;
+    
+    /* Status Colors */
+    --status-pending: #ffbd5a;
+    --status-processing: #6089ff;
+    --status-completed: #34cd75;
+    --status-cancelled: #ff5a5a;
+    --error-red: #F44336;
+    
+    /* Data Category Colors */
+    --sales-color: #18a558;
+    --orders-color: #4a6fa5;
+    --products-color: #9c6ade;
+    --customers-color: #ff9f43;
+    
+    /* Social Media Colors */
+    --social-blue: #1877F2;
+    --social-black: #000000;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+    
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius: 8px;
+    --radius-lg: 12px;
+    
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+}

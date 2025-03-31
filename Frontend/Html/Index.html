@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmers Marketplace</title>
+    <link rel="stylesheet" href="../css/color.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="/Backend/Component/menu-toggle/menu-toggle.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"> <!--icon-->
+    <link rel="icon" href="/assets/image/logo.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@300..700&family=Alfa+Slab+One&family=Berkshire+Swash&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Dancing+Script:wght@400..700&family=Darumadrop+One&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Merienda:wght@300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Moon+Dance&family=Mr+Dafoe&family=Orbitron:wght@400..900&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header id="header">
+        <nav class="topnav" aria-label="Main Navigation">
+            <div class="logo">
+                <a href="#home"><img src="/assets/image/logo.png" alt="Farmers Marketplace Logo" height="100"></a>
+            </div>
+            <div class="nav-links" id="mobile-menu">
+                <div class="link" id="item-list">
+                    <a href="#home">Home</a>
+                    <a href="#about">About</a>
+                    <a href="#item">Products</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <a class="shop-button" role="button" onclick="check()">Shop</a>
+            </div>
+            <div class="hamburger-menu">
+                <input type="checkbox" class="hamburger-toggle" id="menu-toggle">
+                <label for="menu-toggle" class="hamburger-icon"></label>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Rest of your content remains the same -->
+    <!-- Main Content -->
+    <main>
+        <!-- Welcome Section -->
+        <section class="welcome" id="home">
+            <div class="welcome-row">
+                <div class="quotes">
+                    <h2 class="welcome">Welcome to Farmers Marketplace</h2>
+                    <p class="quote" id="main-quote">Organic Bounty, Nurturing Wellness</p>
+                    <p class="quote">
+                        At Farmers Marketplace, we believe in fostering a direct connection between farmers and consumers.
+                        Our marketplace is dedicated to supporting local agriculture and providing fresh, high-quality farm produce to individuals and businesses in our community.
+                        With our easy-to-use platform, you can discover a wide range of farm-fresh products, support sustainable farming practices, and enjoy the bounties of the land.
+                    </p>
+                </div>
+                <img src="/assets/image/Vegi.png" alt="Fresh Vegetables" class="vegi">
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about-alt">
+            <div class="about-row">
+                <img src="/assets/image/basket.png" alt="Basket of Produce" class="about-img">
+                <div class="quotes">
+                    <h2>About Us</h2>
+                    <p class="quote">
+                        Our mission is to empower farmers to share their organic bounty while offering health-conscious consumers easy access to fresh, ethically sourced foods. Through our dedication to transparency, quality, and environmental responsibility, we strive to cultivate a community where the principles of well-being and sustainability converge, inspiring healthier lifestyles and supporting the livelihoods of farmers committed to organic agriculture.
+                    </p>
+                </div>    
+            </div>
+        </section>
+
+        <!-- Vision Section -->
+        <section id="vision" class="vision-alt">
+            <div class="vision-row">
+                <div class="quotes">
+                    <h2>Our Vision</h2>
+                    <p class="quote">
+                        Our vision is to establish a digital marketplace that champions wellness and vitality by connecting consumers with a diverse array of organic farm produce. We aim to empower farmers to share their organic harvests with health-conscious consumers, fostering a community where sustainable, ethical, and nourishing food choices are readily accessible. Through our commitment to transparency and quality, we seek to inspire a future where the Farmers Marketplace journey embodies the principles of holistic well-being, supporting both the health of individuals and the planet.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="item" class="product">
+            <h3 class="section-title">Discover the Bounty of the Land</h3>
+            <p class="section-description">
+                At Farmers Marketplace, we bring the farm to your table. Our marketplace offers an extensive selection of farm produce, including:
+            </p>
+
+            <div class="items">
+                <div class="row1">
+                    <article class="products-card">
+                        <img src="/assets/image/Products/apple.png" alt="Fresh Apples" class="products-img">
+                        <h4 class="products-title">Fresh Fruits</h4>
+                        <p class="products-subtitle">Enjoy the juiciest apples, berries, citrus fruits, and more, straight from the orchard.</p>
+                    </article>
+                    <article class="products-card">
+                        <img src="/assets/image/Products/vegetable.png" alt="Fresh Vegetables" class="products-img">
+                        <h4 class="products-title">Crisp Vegetables</h4>
+                        <p class="products-subtitle">From leafy greens and vibrant peppers to root vegetables and exotic varieties, our marketplace has it all.</p>
+                    </article>
+                    <article class="products-card">
+                        <img src="/assets/image/Products/milk.png" alt="Farm Fresh Milk" class="products-img">
+                        <h4 class="products-title">Dairy Delights</h4>
+                        <p class="products-subtitle">Indulge in creamy cheeses, farm-fresh milk, and artisanal butter.</p>
+                    </article>
+                </div>
+                <div class="row2">
+                    <article class="products-card">
+                        <img src="/assets/image/Products/organic.png" alt="Certified Organic Produce" class="products-img">
+                        <h4 class="products-title">Organic Options</h4>
+                        <p class="products-subtitle">Discover a range of certified organic produce, free from pesticides and chemicals.</p>
+                    </article>
+                    <article class="products-card">
+                        <img src="/assets/image/Products/Egg.png" alt="Egg Produce" class="products-img">
+                        <h4 class="products-title">Eggs</h4>
+                        <p class="products-subtitle">Crack into freshness with farm-raised eggs, rich in taste and nutrition.</p>
+                    </article>
+                    <article class="products-card">
+                        <img src="/assets/image/Products/chicken.png" alt="meat Produce" class="products-img">
+                        <h4 class="products-title">Meat Options</h4>
+                        <p class="products-subtitle">Enjoy premium quality cuts, sourced responsibly and bursting with flavor.</p>
+                    </article>
+                </div>    
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <div class="footer-container container grid">
+            <div>
+                <a href="" class="footer-logo">
+                    <img src="/assets/image/logo.png" class="logo" alt="Farmers Marketplace Logo">
+                </a>
+
+                <p class="footer-description" style="color:white;">
+                    Organic Bounty, Nurturing Wellness
+                </p>
+            </div>
+
+            <div class="footer-data grid">
+                <div>
+                    <h3 class="footer-title">About</h3>
+
+                    <ul class="footer-links">
+                        <li><a href="#home" class="footer-link">Home</a></li>
+                        <li><a href="#about" class="footer-link">About</a></li>
+                        <li><a href="#item" class="footer-link">Products</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="footer-title">Contact</h3>
+
+                    <ul class="footer-links">
+                        <li><a href="tel:+91xxxxxx69" class="footer-link">+91 xxxxx-xxx69</a></li>
+                        <li><a href="mailto:hello@farmersmarketplace.ng" class="footer-link">hello@farmersmarketplace.ng</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="footer-title">Get in Touch</h3>
+
+                    <div class="footer-social">
+                        <a href="http://facebook.com/" target="_blank" class="footer-social-link">
+                            <i class="ri-facebook-circle-line"></i>
+                        </a>
+                        <a href="http://instagram.com/" target="_blank" class="footer-social-link">
+                            <i class="ri-instagram-line"></i>
+                        </a>
+                        <a href="https://whatsapp.com/" target="_blank" class="footer-social-link">
+                            <i class="ri-whatsapp-line"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>  
+        </div>
+        
+        <span class="footer-copy">
+            &#169; Farmers Marketplace 2025. All Rights Reserved
+        </span>
+
+        <div class="tooltip">
+            <small><i class="ri-information-line tooltip-text"></i> License</small>
+        </div>
+    </footer>
+    <script src="../js/script.js"></script>
+    <script src="../js/home-shop.js"></script>
+</body>
+</html>

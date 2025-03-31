@@ -1,0 +1,223 @@
+@import url(color.css);
+/* My Order CSS File */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--white);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow);
+    border-radius: var(--radius);
+}
+
+h1, h2, h3 {
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-md);
+}
+
+h1 {
+    font-size: 28px;
+    border-bottom: 2px solid var(--primary-light);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Back Button */
+.back-btn {
+    background: var(--secondary-color);
+    color: var(--white);
+    padding: 10px 16px;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-md);
+    display: inline-flex;
+    align-items: center;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    background: var(--dark-gray);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.back-btn::before {
+    content: "←";
+    margin-right: 8px;
+}
+
+/* Order Details Styles */
+.order-details {
+    background: var(--linen);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius);
+    margin-bottom: var(--spacing-lg);
+    border-left: 4px solid var(--primary-color);
+}
+
+.order-summary {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--medium-gray);
+}
+
+.order-meta {
+    flex: 1;
+}
+
+.order-meta h3 {
+    color: var(--primary-color);
+    font-size: 22px;
+    margin-bottom: var(--spacing-sm);
+}
+
+.order-meta p {
+    margin-bottom: var(--spacing-sm);
+    color: var(--dark-gray);
+}
+
+.order-total {
+    text-align: right;
+    font-weight: bold;
+    font-size: 18px;
+    color: var(--primary-color);
+}
+
+.order-total p {
+    margin-bottom: var(--spacing-sm);
+}
+
+/* Status Colors */
+.status-pending {
+    color: var(--status-pending);
+    font-weight: 600;
+}
+
+.status-processing, .status-shipped {
+    color: var(--status-processing);
+    font-weight: 600;
+}
+
+.status-completed, .status-delivered {
+    color: var(--status-completed);
+    font-weight: 600;
+}
+
+.status-cancelled {
+    color: var(--status-cancelled);
+    font-weight: 600;
+}
+
+/* Address Section */
+.address-section, .items-section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.address-section h3, .items-section h3 {
+    color: var(--secondary-color);
+    margin-bottom: var(--spacing-sm);
+    font-size: 18px;
+    border-bottom: 1px solid var(--medium-gray);
+    padding-bottom: var(--spacing-xs);
+}
+
+.address-box {
+    background: var(--white);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    line-height: 1.8;
+}
+
+/* Items Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+th, td {
+    padding: var(--spacing-md);
+    text-align: left;
+    border-bottom: 1px solid var(--medium-gray);
+}
+
+th {
+    background-color: var(--primary-light);
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+tr:hover {
+    background-color: var(--white);
+}
+
+/* Cancel Order Button */
+.actions {
+    margin-top: var(--spacing-lg);
+    text-align: right;
+}
+
+.btn {
+    display: inline-block;
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 10px 16px;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .container {
+        padding: var(--spacing-md);
+    }
+    
+    table {
+        font-size: 14px;
+    }
+    
+    th, td {
+        padding: var(--spacing-sm);
+    }
+    
+    .order-summary {
+        flex-direction: column;
+    }
+    
+    .order-total {
+        text-align: left;
+        margin-top: var(--spacing-sm);
+    }
+    
+    .actions {
+        text-align: center;
+    }
+}

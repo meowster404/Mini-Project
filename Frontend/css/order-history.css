@@ -1,0 +1,132 @@
+@import url(color.css);
+/* Order History CSS File */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--white);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow);
+    border-radius: var(--radius);
+}
+
+h1, h2, h3 {
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-md);
+}
+
+h1 {
+    font-size: 28px;
+    border-bottom: 2px solid var(--primary-light);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+th, td {
+    padding: var(--spacing-md);
+    text-align: left;
+    border-bottom: 1px solid var(--medium-gray);
+}
+
+th {
+    background-color: var(--primary-light);
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+tr:hover {
+    background-color: var(--linen);
+    cursor: pointer;
+}
+
+/* Button Styles */
+.btn {
+    display: inline-block;
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 10px 16px;
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background: var(--lime-green);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+/* Order Status Styles */
+.status-pending {
+    color: var(--status-pending);
+    font-weight: 600;
+}
+
+.status-processing, .status-shipped {
+    color: var(--status-processing);
+    font-weight: 600;
+}
+
+.status-completed, .status-delivered {
+    color: var(--status-completed);
+    font-weight: 600;
+}
+
+.status-cancelled {
+    color: var(--status-cancelled);
+    font-weight: 600;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--dark-gray);
+    background: var(--linen);
+    border-radius: var(--radius);
+    margin: var(--spacing-lg) 0;
+}
+
+.empty-state p {
+    margin-bottom: var(--spacing-md);
+    font-size: 18px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .container {
+        padding: var(--spacing-md);
+    }
+    
+    table {
+        font-size: 14px;
+    }
+    
+    th, td {
+        padding: var(--spacing-sm);
+    }
+}

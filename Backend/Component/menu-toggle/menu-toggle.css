@@ -1,0 +1,81 @@
+:root {
+    --linen: #F8F4E8;
+    --lime-green: #7CAA2D;
+    --field-drab: #5A5D2F;
+    --selective-yellow: #FFBA08;
+    --light-gray: #EEEEEE;
+}
+    
+    /* Reset and base styles */
+     * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Hamburger Menu Container */
+    .hamburger-menu {
+        position: relative;
+        width: 30px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    /* Hidden checkbox */
+    .hamburger-toggle {
+        display: none;
+    }
+
+    /* Hamburger Icon */
+    .hamburger-icon {
+        display: block;
+        width: 100%;
+        height: 3px;
+        background-color: var(--field-drab);
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: all 0.3s ease;
+    }
+
+    /* Pseudo-elements for top and bottom lines */
+    .hamburger-icon::before,
+    .hamburger-icon::after {
+        content: '';
+        display: block;
+        width: 100%;
+        height: 3px;
+        background-color: #333;
+        position: absolute;
+        transition: all 0.3s ease;
+    }
+
+    .hamburger-icon::before {
+        top: -8px;
+    }
+
+    .hamburger-icon::after {
+        bottom: -8px;
+    }
+
+    /* Transformation when checkbox is checked */
+    .hamburger-toggle:checked ~ .hamburger-icon {
+        background-color: transparent;
+    }
+
+    .hamburger-toggle:checked ~ .hamburger-icon::before {
+        top: 0;
+        transform: rotate(45deg);
+    }
+
+    .hamburger-toggle:checked ~ .hamburger-icon::after {
+        bottom: 0;
+        transform: rotate(-45deg);
+    }
+
+    /* Responsive Display */
+    @media screen and (min-width: 768px) {
+        .hamburger-menu {
+            display: none;
+        }
+    }
