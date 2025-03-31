@@ -1,6 +1,10 @@
 <?php
 require_once 'db.php';
 
+// Add CORS headers for local development
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+
 // Function to get product by ID
 function getProductById($id) {
     global $conn;
@@ -75,12 +79,14 @@ if (isset($_GET['action'])) {
                 echo json_encode(['success' => true, 'data' => $product]);
                 break;
                 
+            // Modify the get_filtered case to include sorting
             case 'get_filtered':
                 $filters = [
                     'categories' => $_GET['categories'] ?? [],
                     'farming_methods' => $_GET['farming_methods'] ?? [],
                     'price_min' => $_GET['price_min'] ?? null,
-                    'price_max' => $_GET['price_max'] ?? null
+                    'price_max' => $_GET['price_max'] ?? null,
+                    'sort_by' => $_GET['sortBy'] ?? 'popularity'
                 ];
                 $products = getFilteredProducts($filters);
                 echo json_encode(['success' => true, 'data' => $products]);

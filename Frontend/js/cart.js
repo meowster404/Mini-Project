@@ -1,10 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    /**
-     * ==============================================
-     * DOM ELEMENTS INITIALIZATION
-     * ==============================================
-     */
-    // Cart quantity elements
+    // Initialize quantity elements
     const quantityInputs = document.querySelectorAll('.quantity-input');
     const increaseButtons = document.querySelectorAll('.increase, .quantity-btn.increase');
     const decreaseButtons = document.querySelectorAll('.decrease, .quantity-btn.decrease');
@@ -15,29 +10,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const promoApplyButton = document.querySelector('.promo-apply');
     const promoInput = document.querySelector('.promo-input');
 
-    /**
-     * ==============================================
-     * EVENT LISTENERS (NORMAL JS)
-     * ==============================================
-     */
-    // Initialize quantity input change events
+    // Quantity input change events
     quantityInputs.forEach(input => {
         input.addEventListener('change', function() {
             const productId = this.getAttribute('data-id') || this.dataset.id;
             let quantity = parseInt(this.value);
             
-            // Ensure quantity is at least 1
             if (quantity < 1) {
                 quantity = 1;
                 this.value = 1;
             }
             
-            // Update cart via AJAX
             updateCartItem(productId, quantity);
         });
     });
     
-    // Initialize increase button click events
+    // Increase button events
     increaseButtons.forEach(button => {
         button.addEventListener('click', function() {
             const productId = this.getAttribute('data-id') || this.dataset.id;
@@ -54,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Initialize decrease button click events
+    // Decrease button events
     decreaseButtons.forEach(button => {
         button.addEventListener('click', function() {
             const productId = this.getAttribute('data-id') || this.dataset.id;
@@ -66,7 +54,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (inputElement) {
                 let quantity = parseInt(inputElement.value) - 1;
                 
-                // Ensure quantity doesn't go below 1
                 if (quantity >= 1) {
                     inputElement.value = quantity;
                     updateCartItem(productId, quantity);
@@ -75,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Initialize remove item button click events
+    // Remove item events
     removeButtons.forEach(button => {
         button.addEventListener('click', function() {
             const productId = this.getAttribute('data-id') || this.dataset.id;
@@ -83,14 +70,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Initialize checkout button (if it exists)
+    // Checkout button
     if (checkoutButton) {
         checkoutButton.addEventListener('click', function() {
             window.location.href = 'checkout.php';
         });
     }
     
-    // Initialize promo code application (if elements exist)
+    // Promo code application
     if (promoApplyButton && promoInput) {
         promoApplyButton.addEventListener('click', function() {
             const promoCode = promoInput.value.trim();
@@ -102,32 +89,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    /**
-     * ==============================================
-     * AJAX FUNCTIONS
-     * ==============================================
-     */
-    /**
-     * Update cart item quantity via AJAX
-     * @param {string|number} productId - The ID of the product to update
-     * @param {number} quantity - The new quantity value
-     */
+    // Update cart item via AJAX
     function updateCartItem(productId, quantity) {
-        fetch('update_cart.php', {
+        fetch('../../Backend/php/cart.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `action=update&id=${productId}&quantity=${quantity}`
+            body: `action=update&product_id=${productId}&quantity=${quantity}`
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // If server returns cart data, update display
                 if (data.cart) {
                     updateCartDisplay(data.cart);
                 } else {
-                    // Otherwise reload the page to reflect changes
                     location.reload();
                 }
             } else {
@@ -140,40 +116,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    /**
-     * Remove cart item via AJAX
-     * @param {string|number} productId - The ID of the product to remove
-     */
+    // Remove cart item via AJAX
     function removeCartItem(productId) {
-        // Determine which endpoint to use based on the code samples
-        const endpoint = 'remove_cart.php';
-        
-        fetch(endpoint, {
+        fetch('../../Backend/php/cart.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `id=${productId}`
+            body: `action=remove&product_id=${productId}`
         })
         .then(response => response.ok ? response.json() : Promise.reject('Failed to remove item'))
         .then(data => {
             if (data.success) {
-                // Remove the item from the display
                 const itemElement = document.querySelector(`.cart-item[data-id="${productId}"]`);
                 if (itemElement) {
                     itemElement.remove();
                 }
                 
-                // If server returns cart data, update display
                 if (data.cart) {
                     updateCartDisplay(data.cart);
                     
-                    // Reload page if cart is empty
                     if (Object.keys(data.cart).length === 0) {
                         window.location.reload();
                     }
                 } else {
-                    // Otherwise reload the page to reflect changes
                     location.reload();
                 }
             } else {
@@ -186,10 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    /**
-     * Apply promo code via AJAX
-     * @param {string} promoCode - The promo code to apply
-     */
+    // Apply promo code via AJAX
     function applyPromoCode(promoCode) {
         fetch('apply_promo.php', {
             method: 'POST',
@@ -213,55 +176,62 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    /**
-     * Update the cart display with new cart data
-     * @param {Object} cart - The updated cart data from server
-     */
+    // Update cart display with new data
     function updateCartDisplay(cart) {
-        // This function would update prices, totals, and other cart display elements
-        // The implementation would depend on the specific structure of your cart data
-        // and HTML layout
+        const cartContainer = document.querySelector('.cart-container');
         
-        // Example implementation (commented out as it's dependent on your HTML structure):
-        /*
-        Object.keys(cart).forEach(productId => {
-            const item = cart[productId];
-            const priceElement = document.querySelector(`.item-price[data-id="${productId}"]`);
-            const subtotalElement = document.querySelector(`.item-subtotal[data-id="${productId}"]`);
+        // Get cart products from localStorage
+        const cartProducts = JSON.parse(localStorage.getItem('farm_fresh_market_cart')) || [];
+        
+        if (!cart || Object.keys(cart).length === 0) {
+            cartContainer.innerHTML = `
+                <div class="empty-cart-section">
+                    <div class="empty-cart-illustration">
+                        <i class="fas fa-shopping-cart fa-4x"></i>
+                    </div>
+                    <h2 class="empty-cart-message">Your cart feels a bit lonely right now.</h2>
+                    <p class="empty-cart-subtext">Looks like you haven't added any items yet.</p>
+                    <a href="../../Frontend/Html/products.html" class="continue-shopping-btn">Continue Shopping</a>
+                </div>`;
+            return;
+        }
+    
+        // Update quantities and prices
+        cartProducts.forEach(product => {
+            const priceElement = document.querySelector(`.item-price[data-id="${product.id}"]`);
+            const subtotalElement = document.querySelector(`.item-subtotal[data-id="${product.id}"]`);
+            const quantityInput = document.querySelector(`.quantity-input[data-id="${product.id}"]`);
             
-            if (priceElement) priceElement.textContent = `$${item.price.toFixed(2)}`;
-            if (subtotalElement) subtotalElement.textContent = `$${(item.price * item.quantity).toFixed(2)}`;
+            if (quantityInput) quantityInput.value = cart[product.id] || 0;
+            if (priceElement) priceElement.textContent = `₹${product.price.toFixed(2)}`;
+            if (subtotalElement) subtotalElement.textContent = `₹${(product.price * (cart[product.id] || 0)).toFixed(2)}`;
         });
         
-        // Update cart total
+        // Update total
         const totalElement = document.querySelector('.cart-total');
-        if (totalElement && cart.total) {
-            totalElement.textContent = `$${cart.total.toFixed(2)}`;
+        if (totalElement) {
+            const total = cartProducts.reduce((sum, product) => {
+                return sum + (product.price * (cart[product.id] || 0));
+            }, 0);
+            totalElement.textContent = `₹${total.toFixed(2)}`;
         }
-        */
     }
 });
 
+// Add to cart function
 function addToCart(productId, quantity = 1) {
     fetch('../../Backend/php/cart.php', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify({
-            action: 'add',
-            product_id: productId,
-            quantity: quantity
-        })
+        body: `action=add&product_id=${productId}&quantity=${quantity}`
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Update cart display
             updateCartDisplay(data.cart);
-            // Show success message
             showNotification('Product added to cart!', 'success');
-            // Update cart count
             updateCartCount(data.cart);
         } else {
             showNotification('Failed to add product to cart', 'error');
@@ -273,14 +243,16 @@ function addToCart(productId, quantity = 1) {
     });
 }
 
+// Update cart count
 function updateCartCount(cart) {
     const cartCount = document.getElementById('cart-count');
     if (cartCount) {
-        const totalItems = Object.values(cart).reduce((sum, quantity) => sum + quantity, 0);
+        const totalItems = Object.values(cart).reduce((sum, item) => sum + parseInt(item.quantity || 1), 0);
         cartCount.textContent = totalItems;
     }
 }
 
+// Show notification
 function showNotification(message, type) {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
@@ -292,7 +264,7 @@ function showNotification(message, type) {
     }, 3000);
 }
 
-// Handle quantity changes
+// Event listeners for quantity buttons
 document.querySelectorAll('.quantity-btn').forEach(button => {
     button.addEventListener('click', function() {
         const productId = this.dataset.id;
@@ -310,7 +282,7 @@ document.querySelectorAll('.quantity-btn').forEach(button => {
     });
 });
 
-// Handle remove item
+// Event listeners for remove buttons
 document.querySelectorAll('.remove-item').forEach(button => {
     button.addEventListener('click', function() {
         const productId = this.dataset.id;
@@ -318,17 +290,14 @@ document.querySelectorAll('.remove-item').forEach(button => {
     });
 });
 
+// Update cart item
 function updateCartItem(productId, quantity) {
     fetch('../../Backend/php/cart.php', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify({
-            action: 'update',
-            product_id: productId,
-            quantity: quantity
-        })
+        body: `action=update&product_id=${productId}&quantity=${quantity}`
     })
     .then(response => response.json())
     .then(data => {
@@ -338,16 +307,14 @@ function updateCartItem(productId, quantity) {
     });
 }
 
+// Remove from cart
 function removeFromCart(productId) {
     fetch('../../Backend/php/cart.php', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: JSON.stringify({
-            action: 'remove',
-            product_id: productId
-        })
+        body: `action=remove&product_id=${productId}`
     })
     .then(response => response.json())
     .then(data => {

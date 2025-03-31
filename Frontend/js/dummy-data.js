@@ -1,86 +1,143 @@
-const dummyProducts = [
-    // Vegetables (30 items)
+// Dummy product data for the Farm Fresh Market
+export const dummyProducts = [
     {
         id: 1,
-        name: 'Fresh Tomatoes',
-        description: 'Fresh and locally sourced tomatoes from trusted farmers.',
+        name: "Fresh Organic Tomatoes",
+        description: "Juicy, vine-ripened organic tomatoes. Perfect for salads and cooking.",
         price: 40,
-        image: '/assets/image/products/vegetables/1.jpg',
-        category: 'vegetables',
-        farm_name: 'Green Valley Farm',
+        category: "vegetables",
+        farming_method: "organic",
+        farm_name: "Green Valley Farms",
+        image: "/assets/image/Products/tomato.jpg",
+        popularity: 4.8,
         is_organic: true,
-        discount: 0,
-        farming_method: 'organic',
-        stock: 50,
-        popularity: 80
+        discount: 10,
+        date_added: "2025-02-15"
     },
-    // ... more vegetables (add 29 more items)
-
-    // Fruits (30 items)
     {
-        id: 31,
-        name: 'Golden Bananas',
-        description: 'Sweet and fresh bananas picked at peak ripeness.',
-        price: 60,
-        image: '/assets/image/products/fruits/1.jpg',
-        category: 'fruits',
-        farm_name: 'Fruit Valley',
-        is_organic: true,
+        id: 2,
+        name: "Crisp Red Apples",
+        description: "Sweet and crisp red apples. Great for snacking or baking.",
+        price: 120,
+        category: "fruits",
+        farming_method: "conventional",
+        farm_name: "Orchard Hills",
+        image: "/assets/image/Products/apple.png",
+        popularity: 4.5,
+        is_organic: false,
         discount: 0,
-        farming_method: 'organic',
-        stock: 100,
-        popularity: 85
+        date_added: "2025-02-20"
     },
-    // ... more fruits (add 29 more items)
-
-    // Meat (20 items)
     {
-        id: 61,
-        name: 'Chicken Breast',
-        description: 'Premium quality chicken from free-range farms.',
-        price: 200,
-        image: '/assets/image/products/meat/1.jpg',
-        category: 'meat',
-        farm_name: 'Green Pastures',
+        id: 3,
+        name: "Free-Range Eggs",
+        description: "Farm-fresh eggs from free-range chickens. Rich in flavor and nutrition.",
+        price: 80,
+        category: "eggs",
+        farming_method: "free-range",
+        farm_name: "Happy Hen Farm",
+        image: "/assets/image/Products/Egg.png",
+        popularity: 4.7,
         is_organic: true,
         discount: 5,
-        farming_method: 'free-range',
-        stock: 30,
-        popularity: 90
+        date_added: "2025-03-01"
     },
-    // ... more meat products (add 19 more items)
-
-    // Eggs (10 items)
     {
-        id: 91,
-        name: 'Brown Eggs',
-        description: 'Fresh brown eggs from happy hens.',
-        price: 80,
-        image: '/assets/image/products/eggs/1.jpg',
-        category: 'eggs',
-        farm_name: 'Happy Hens',
+        id: 4,
+        name: "Organic Spinach",
+        description: "Nutrient-rich organic spinach leaves. Perfect for salads and cooking.",
+        price: 35,
+        category: "vegetables",
+        farming_method: "organic",
+        farm_name: "Green Valley Farms",
+        image: "/assets/image/Products/spinach.jpg",
+        popularity: 4.6,
         is_organic: true,
         discount: 0,
-        farming_method: 'free-range',
-        stock: 60,
-        popularity: 70
+        date_added: "2025-03-05"
     },
-    // ... more eggs (add 9 more items)
-
-    // Dairy (10 items)
     {
-        id: 121,
-        name: 'Whole Milk',
-        description: 'Fresh milk from local dairy farms.',
-        price: 50,
-        image: '/assets/image/products/dairy/1.jpg',
-        category: 'dairy',
-        farm_name: 'Dairy Fresh',
+        id: 5,
+        name: "Fresh Chicken",
+        description: "Premium quality chicken, raised without antibiotics.",
+        price: 180,
+        category: "chicken",
+        farming_method: "free-range",
+        farm_name: "Sunshine Poultry",
+        image: "/assets/image/Products/chicken.png",
+        popularity: 4.9,
+        is_organic: false,
+        discount: 0,
+        date_added: "2025-03-10"
+    },
+    {
+        id: 6,
+        name: "Organic Carrots",
+        description: "Sweet and crunchy organic carrots. Great for snacking and cooking.",
+        price: 30,
+        category: "vegetables",
+        farming_method: "organic",
+        farm_name: "Roots & Greens",
+        image: "/assets/image/Products/carrot.jpg",
+        popularity: 4.4,
         is_organic: true,
         discount: 0,
-        farming_method: 'organic',
-        stock: 45,
-        popularity: 80
+        date_added: "2025-03-12"
+    },
+    {
+        id: 7,
+        name: "Fresh Mutton",
+        description: "High-quality mutton from grass-fed sheep.",
+        price: 350,
+        category: "mutton",
+        farming_method: "conventional",
+        farm_name: "Highland Pastures",
+        image: "/assets/image/Products/mutton.jpg",
+        popularity: 4.7,
+        is_organic: false,
+        discount: 5,
+        date_added: "2025-03-15"
+    },
+    {
+        id: 8,
+        name: "Organic Bananas",
+        description: "Sweet and ripe organic bananas. Perfect for snacking and smoothies.",
+        price: 60,
+        category: "fruits",
+        farming_method: "organic",
+        farm_name: "Tropical Harvest",
+        image: "/assets/image/Products/banana.jpg",
+        popularity: 4.5,
+        is_organic: true,
+        discount: 0,
+        date_added: "2025-03-18"
+    },
+    {
+        id: 9,
+        name: "Fresh Fish",
+        description: "Freshly caught fish. Rich in omega-3 fatty acids.",
+        price: 220,
+        category: "fish",
+        farming_method: "conventional",
+        farm_name: "Ocean Harvest",
+        image: "/assets/image/Products/fish.jpg",
+        popularity: 4.6,
+        is_organic: false,
+        discount: 0,
+        date_added: "2025-03-20"
+    },
+    {
+        id: 10,
+        name: "Hydroponic Lettuce",
+        description: "Crisp and fresh lettuce grown using hydroponic methods.",
+        price: 45,
+        category: "vegetables",
+        farming_method: "hydroponic",
+        farm_name: "Future Farms",
+        image: "/assets/image/Products/lettuce.jpg",
+        popularity: 4.3,
+        is_organic: false,
+        discount: 0,
+        date_added: "2025-03-25"
     }
-    // ... more dairy products (add 9 more items)
 ];
