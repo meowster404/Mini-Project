@@ -305,7 +305,7 @@ function createProductCard(product) {
                         <button class="quantity-btn increase-quantity" data-product-id="${product.id}">+</button>
                     </div>
                     <div class="cart-actions">
-                        <button class="view-cart-btn">View Cart</button>
+                        <a href="../../Backend/php/cart.php" class="view-cart-btn">View Cart</a>
                     </div>
                 </div>
             </div>
@@ -366,54 +366,56 @@ function addProductCardEventListeners() {
     
     // View cart buttons
     const viewCartButtons = document.querySelectorAll('.view-cart-btn');
+    // In addProductCardEventListeners function
     viewCartButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            window.location.href = '/cart';
-        });
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = '../../Backend/php/cart.php';
+    });
+    });
+    
+    // In addToCart function
+    fetch('../../Backend/php/cart.php', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'  // Change content type
+    },
+    body: `action=add&product_id=${productId}&quantity=1`    // Change body format
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update local cart data
+            const existingItem = cart.find(item => item.id == productId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    quantity: 1
+                });
+            }
+            
+            saveCart();
+            updateCartCount();
+            renderProducts(filteredProducts);
+            
+            // Optional: Redirect to cart page
+            window.location.href = '../../Backend/php/cart.php';
+        } else {
+            alert('Failed to add product to cart. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error adding to cart:', error);
+        alert('An error occurred while adding to cart. Please try again.');
     });
 }
 
-/**
- * Add a product to the cart
- */
-function addToCart(productId) {
-    const product = allProducts.find(p => p.id == productId);
-    
-    if (!product) {
-        console.error('Product not found:', productId);
-        return;
-    }
-    
-    // Check if product is already in cart
-    const existingItem = cart.find(item => item.id == productId);
-    
-    if (existingItem) {
-        // Update quantity
-        existingItem.quantity += 1;
-    } else {
-        // Add new item
-        cart.push({
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            image: product.image,
-            quantity: 1
-        });
-    }
-    
-    // Save cart to localStorage
-    saveCart();
-    
-    // Update cart count
-    updateCartCount();
-    
-    // Re-render products to update UI
-    renderProducts(filteredProducts);
-}
-
-/**
- * Update the quantity of a cart item
- */
+// Also update updateCartItemQuantity function
 function updateCartItemQuantity(productId, change) {
     const cartItem = cart.find(item => item.id == productId);
     
@@ -422,22 +424,38 @@ function updateCartItemQuantity(productId, change) {
         return;
     }
     
-    // Update quantity
-    cartItem.quantity += change;
+    const newQuantity = cartItem.quantity + change;
+    if (newQuantity < 1) return;
     
-    // Remove item if quantity is 0
-    if (cartItem.quantity <= 0) {
-        cart = cart.filter(item => item.id != productId);
-    }
-    
-    // Save cart to localStorage
-    saveCart();
-    
-    // Update cart count
-    updateCartCount();
-    
-    // Re-render products to update UI
-    renderProducts(filteredProducts);
+    fetch('../../Backend/php/cart.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `action=update&product_id=${productId}&quantity=${newQuantity}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update local cart data
+            cartItem.quantity = newQuantity;
+            
+            // Save cart to localStorage
+            saveCart();
+            
+            // Update cart count
+            updateCartCount();
+            
+            // Re-render products to update UI
+            renderProducts(filteredProducts);
+        } else {
+            alert('Failed to update cart. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error updating cart:', error);
+        alert('An error occurred while updating cart. Please try again.');
+    });
 }
 
 /**
