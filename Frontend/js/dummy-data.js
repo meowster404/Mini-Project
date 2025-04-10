@@ -1,5 +1,5 @@
 // Dummy product data for the Farm Fresh Market
-export const dummyProducts = [
+const dummyProducts = [
     {
         id: 1,
         name: "Fresh Organic Tomatoes",
@@ -8,7 +8,7 @@ export const dummyProducts = [
         category: "vegetables",
         farming_method: "organic",
         farm_name: "Green Valley Farms",
-        image: "/assets/image/Products/tomato.jpg",
+        image: "../../assets/image/p/Tomato.jpg",  // Changed path
         popularity: 4.8,
         is_organic: true,
         discount: 10,
@@ -22,7 +22,7 @@ export const dummyProducts = [
         category: "fruits",
         farming_method: "conventional",
         farm_name: "Orchard Hills",
-        image: "/assets/image/Products/apple.png",
+        image: "../../assets/image/p/Apple.webp",  // Changed path
         popularity: 4.5,
         is_organic: false,
         discount: 0,
@@ -36,7 +36,7 @@ export const dummyProducts = [
         category: "eggs",
         farming_method: "free-range",
         farm_name: "Happy Hen Farm",
-        image: "/assets/image/Products/Egg.png",
+        image: "../../assets/image/p/Brown-Eggs.webp",
         popularity: 4.7,
         is_organic: true,
         discount: 5,
@@ -50,7 +50,7 @@ export const dummyProducts = [
         category: "vegetables",
         farming_method: "organic",
         farm_name: "Green Valley Farms",
-        image: "/assets/image/Products/spinach.jpg",
+        image: "../..assets/image/p/spinach.jpg",
         popularity: 4.6,
         is_organic: true,
         discount: 0,
@@ -64,80 +64,12 @@ export const dummyProducts = [
         category: "chicken",
         farming_method: "free-range",
         farm_name: "Sunshine Poultry",
-        image: "/assets/image/Products/chicken.png",
+        image: "../../assets/image/p/chicken.",
         popularity: 4.9,
         is_organic: false,
         discount: 0,
         date_added: "2025-03-10"
-    },
-    {
-        id: 6,
-        name: "Organic Carrots",
-        description: "Sweet and crunchy organic carrots. Great for snacking and cooking.",
-        price: 30,
-        category: "vegetables",
-        farming_method: "organic",
-        farm_name: "Roots & Greens",
-        image: "/assets/image/Products/carrot.jpg",
-        popularity: 4.4,
-        is_organic: true,
-        discount: 0,
-        date_added: "2025-03-12"
-    },
-    {
-        id: 7,
-        name: "Fresh Mutton",
-        description: "High-quality mutton from grass-fed sheep.",
-        price: 350,
-        category: "mutton",
-        farming_method: "conventional",
-        farm_name: "Highland Pastures",
-        image: "/assets/image/Products/mutton.jpg",
-        popularity: 4.7,
-        is_organic: false,
-        discount: 5,
-        date_added: "2025-03-15"
-    },
-    {
-        id: 8,
-        name: "Organic Bananas",
-        description: "Sweet and ripe organic bananas. Perfect for snacking and smoothies.",
-        price: 60,
-        category: "fruits",
-        farming_method: "organic",
-        farm_name: "Tropical Harvest",
-        image: "/assets/image/Products/banana.jpg",
-        popularity: 4.5,
-        is_organic: true,
-        discount: 0,
-        date_added: "2025-03-18"
-    },
-    {
-        id: 9,
-        name: "Fresh Fish",
-        description: "Freshly caught fish. Rich in omega-3 fatty acids.",
-        price: 220,
-        category: "fish",
-        farming_method: "conventional",
-        farm_name: "Ocean Harvest",
-        image: "/assets/image/Products/fish.jpg",
-        popularity: 4.6,
-        is_organic: false,
-        discount: 0,
-        date_added: "2025-03-20"
-    },
-    {
-        id: 10,
-        name: "Hydroponic Lettuce",
-        description: "Crisp and fresh lettuce grown using hydroponic methods.",
-        price: 45,
-        category: "vegetables",
-        farming_method: "hydroponic",
-        farm_name: "Future Farms",
-        image: "/assets/image/Products/lettuce.jpg",
-        popularity: 4.3,
-        is_organic: false,
-        discount: 0,
-        date_added: "2025-03-25"
     }
 ];
+
+export {dummyProducts};

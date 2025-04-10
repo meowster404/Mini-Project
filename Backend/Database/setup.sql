@@ -51,6 +51,9 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(100) UNIQUE NOT NULL,
     phone VARCHAR(15),
     password VARCHAR(255) NOT NULL,
+    user_type ENUM('consumer', 'farmer') NOT NULL,
+    farm_name VARCHAR(100),
+    farm_address TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

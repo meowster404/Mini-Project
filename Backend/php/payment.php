@@ -6,8 +6,8 @@ $orderComplete = false;
 // Start session to access cart data
 session_start();
 
-// Include database connection
-include 'db.php'; // Using the same connection file as cart.php
+// Remove database connection
+// include __DIR__ . '../includes/db.php';
 
 // Process form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -133,33 +133,25 @@ function validateCreditCard($number) {
     return ($total % 10 == 0);
 }
 
-// Get cart items from the database using the same approach as cart.php
+// Modify the cart items processing to use session data only
 $orderItems = [];
 $subtotal = 0;
 $shipping = 0;
 
 // Check if cart exists in session
 if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
-    $cartIds = implode(',', array_keys($_SESSION['cart']));
-    $query = "SELECT * FROM products WHERE id IN ($cartIds)";
-    $result = mysqli_query($conn, $query);
-    
-    while ($row = mysqli_fetch_assoc($result)) {
-        $id = $row['id'];
-        $quantity = $_SESSION['cart'][$id];
-        $itemTotal = $row['price'] * $quantity;
-        
+    foreach ($_SESSION['cart'] as $item) {
         $orderItems[] = [
-            'id' => $id,
-            'name' => $row['name'],
-            'quantity' => $quantity,
-            'price' => $itemTotal
+            'id' => $item['id'],
+            'name' => $item['name'],
+            'quantity' => $item['quantity'],
+            'price' => $item['price'] * $item['quantity']
         ];
         
-        $subtotal += $itemTotal;
+        $subtotal += $item['price'] * $item['quantity'];
     }
     
-    // Use the same shipping logic as cart.php
+    // Use the same shipping logic
     $shipping = ($subtotal >= 200) ? 0 : 50;
 } else {
     // Redirect to cart if no items

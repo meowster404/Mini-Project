@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Scroll to the top (Home) on refresh
     if (window.location.hash) {
-        history.replaceState(null, null, " "); // Remove hash from URL
+        history.replaceState(null, null, " ");
     }
     window.scrollTo(0, 0);
 
@@ -16,24 +16,29 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Mobile menu toggle
-    const menuToggle = document.getElementById("menu-toggle");
-    const navLinks = document.getElementById("mobile-menu");
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.getElementById('nav-links');
+    
+    window.toggleMenu = function() {
+        hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+    }
 
-    menuToggle.addEventListener("change", function () {
-        if (this.checked) {
-            navLinks.classList.add("active");
-        } else {
-            navLinks.classList.remove("active");
+    // Close menu when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.hamburger-menu') && 
+            !event.target.closest('.nav-links') && 
+            navLinks.classList.contains('active')) {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
         }
     });
 
-    // Close menu when clicking a link (for mobile)
+    // Close menu when clicking a link
     document.querySelectorAll(".nav-links a").forEach(link => {
         link.addEventListener("click", () => {
-            if (menuToggle.checked) {
-                menuToggle.checked = false;
-                navLinks.classList.remove("active");
-            }
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
         });
     });
 });

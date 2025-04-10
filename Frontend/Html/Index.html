@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,9 +7,8 @@
     <title>Farmers Marketplace</title>
     <link rel="stylesheet" href="../css/color.css">
     <link rel="stylesheet" href="../css/styles.css">
-    <link rel="stylesheet" href="/Backend/Component/menu-toggle/menu-toggle.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css"> <!--icon-->
-    <link rel="icon" href="/assets/image/logo.png" type="image/x-icon">
+    <link rel="icon" href="../../assets/image/logo.png" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Akshar:wght@300..700&family=Alfa+Slab+One&family=Berkshire+Swash&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Dancing+Script:wght@400..700&family=Darumadrop+One&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Merienda:wght@300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Moon+Dance&family=Mr+Dafoe&family=Orbitron:wght@400..900&family=Oswald:wght@200..700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -16,20 +16,25 @@
     <header id="header">
         <nav class="topnav" aria-label="Main Navigation">
             <div class="logo">
-                <a href="#home"><img src="/assets/image/logo.png" alt="Farmers Marketplace Logo" height="100"></a>
+                <a href="#home"><img src="../../assets/image/logo.png" alt="Farmers Marketplace Logo" height="100"></a>
             </div>
-            <div class="nav-links" id="mobile-menu">
-                <div class="link" id="item-list">
-                    <a href="#home">Home</a>
-                    <a href="#about">About</a>
-                    <a href="#item">Products</a>
-                    <a href="#contact">Contact</a>
+            <div class="wrapper">
+                <div class="nav-links" id="nav-links">
+                    <div class="link" id="item-list">
+                        <a href="#home">Home</a>
+                        <a href="#about">About</a>
+                        <a href="#item">Products</a>
+                        <a href="#contact">Contact</a>
+                    </div>
+                    <a class="shop-button" role="button" onclick="check()">Shop</a>
                 </div>
-                <a class="shop-button" role="button" onclick="check()">Shop</a>
-            </div>
-            <div class="hamburger-menu">
-                <input type="checkbox" class="hamburger-toggle" id="menu-toggle">
-                <label for="menu-toggle" class="hamburger-icon"></label>
+                <div class="hamburger-menu">
+                    <div class="hamburger" onclick="toggleMenu()">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
             </div>
         </nav>
     </header>
@@ -49,14 +54,14 @@
                         With our easy-to-use platform, you can discover a wide range of farm-fresh products, support sustainable farming practices, and enjoy the bounties of the land.
                     </p>
                 </div>
-                <img src="/assets/image/Vegi.png" alt="Fresh Vegetables" class="vegi">
+                <img src="../../assets/image/Vegi.png" alt="Fresh Vegetables" class="vegi">
             </div>
         </section>
 
         <!-- About Section -->
         <section id="about" class="about-alt">
             <div class="about-row">
-                <img src="/assets/image/basket.png" alt="Basket of Produce" class="about-img">
+                <img src="../../assets/image/basket.png" alt="Basket of Produce" class="about-img">
                 <div class="quotes">
                     <h2>About Us</h2>
                     <p class="quote">
@@ -88,34 +93,34 @@
             <div class="items">
                 <div class="row1">
                     <article class="products-card">
-                        <img src="/assets/image/Products/apple.png" alt="Fresh Apples" class="products-img">
+                        <img src="../../assets/image/Products/apple.png" alt="Fresh Apples" class="products-img">
                         <h4 class="products-title">Fresh Fruits</h4>
                         <p class="products-subtitle">Enjoy the juiciest apples, berries, citrus fruits, and more, straight from the orchard.</p>
                     </article>
                     <article class="products-card">
-                        <img src="/assets/image/Products/vegetable.png" alt="Fresh Vegetables" class="products-img">
+                        <img src="../../assets/image/Products/vegetable.png" alt="Fresh Vegetables" class="products-img">
                         <h4 class="products-title">Crisp Vegetables</h4>
                         <p class="products-subtitle">From leafy greens and vibrant peppers to root vegetables and exotic varieties, our marketplace has it all.</p>
                     </article>
                     <article class="products-card">
-                        <img src="/assets/image/Products/milk.png" alt="Farm Fresh Milk" class="products-img">
+                        <img src="../../assets/image/Products/milk.png" alt="Farm Fresh Milk" class="products-img">
                         <h4 class="products-title">Dairy Delights</h4>
                         <p class="products-subtitle">Indulge in creamy cheeses, farm-fresh milk, and artisanal butter.</p>
                     </article>
                 </div>
                 <div class="row2">
                     <article class="products-card">
-                        <img src="/assets/image/Products/organic.png" alt="Certified Organic Produce" class="products-img">
+                        <img src="../../assets/image/Products/organic.png" alt="Certified Organic Produce" class="products-img">
                         <h4 class="products-title">Organic Options</h4>
                         <p class="products-subtitle">Discover a range of certified organic produce, free from pesticides and chemicals.</p>
                     </article>
                     <article class="products-card">
-                        <img src="/assets/image/Products/Egg.png" alt="Egg Produce" class="products-img">
+                        <img src="../../assets/image/Products/Egg.png" alt="Egg Produce" class="products-img">
                         <h4 class="products-title">Eggs</h4>
                         <p class="products-subtitle">Crack into freshness with farm-raised eggs, rich in taste and nutrition.</p>
                     </article>
                     <article class="products-card">
-                        <img src="/assets/image/Products/chicken.png" alt="meat Produce" class="products-img">
+                        <img src="../../assets/image/Products/chicken.png" alt="meat Produce" class="products-img">
                         <h4 class="products-title">Meat Options</h4>
                         <p class="products-subtitle">Enjoy premium quality cuts, sourced responsibly and bursting with flavor.</p>
                     </article>
@@ -129,7 +134,7 @@
         <div class="footer-container container grid">
             <div>
                 <a href="" class="footer-logo">
-                    <img src="/assets/image/logo.png" class="logo" alt="Farmers Marketplace Logo">
+                    <img src="../../assets/image/logo.png" class="logo" alt="Farmers Marketplace Logo">
                 </a>
 
                 <p class="footer-description" style="color:white;">

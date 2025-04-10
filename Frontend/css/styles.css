@@ -59,34 +59,65 @@ img {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Navigation Bar */
 .topnav {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 .nav-links {
     display: flex;
     align-items: center;
-    padding-right: 20px;
-    margin-right: 20px;
+    gap: 30px;
+}
+
+/* Update mobile styles */
+@media screen and (max-width: 900px) {
+    .wrapper {
+        justify-content: flex-end;
+    }
+
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--linen);
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .nav-links.active {
+        display: flex;
+        flex-direction: column;
+    }
 }
 
 .topnav .logo img {
-    margin-left: 30px;
     width: 70px;
     height: auto;
+    margin-left: 30px;
 }
 
-.topnav .link a {
-    margin: 0 15px;
-    font-size: 20px;
-    font-weight: bold;
-    color: var(--field-drab);
+.topnav .link {
+    display: flex;
+    align-items: center;
+    gap: 30px;
 }
 
 .topnav .shop-button {
+    margin-right: 30px;  /* Add right margin to the shop button */
     background-color: var(--lime-green);
     color: var(--linen);
     padding: 10px 20px;
@@ -482,5 +513,72 @@ main {
     
     .products-card {
         width: 250px;
+    }
+}
+
+/* Add these styles for the hamburger menu */
+.hamburger-menu {
+    display: none;
+}
+
+.hamburger {
+    cursor: pointer;
+    padding: 10px;
+}
+
+.hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    margin: 5px 0;
+    transition: 0.4s;
+}
+
+/* Mobile responsive styles */
+@media screen and (max-width: 768px) {
+    .hamburger-menu {
+        display: block;
+        margin-right: 20px;
+    }
+
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--linen);
+        padding: 20px 0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        z-index: 1000;
+    }
+
+    .nav-links.active {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .nav-links .link {
+        flex-direction: column;
+        width: 100%;
+        gap: 15px;
+    }
+
+    .nav-links .shop-button {
+        margin: 15px auto;
+    }
+
+    /* Hamburger animation */
+    .hamburger.active span:nth-child(1) {
+        transform: rotate(-45deg) translate(-5px, 6px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+        transform: rotate(45deg) translate(-5px, -6px);
     }
 }

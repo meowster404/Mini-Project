@@ -1,3 +1,4 @@
+<?php
 function getProductCategories() {
     global $conn;
     
@@ -13,3 +14,4 @@ function getProductCategories() {
         return [];
     }
 }
+?>

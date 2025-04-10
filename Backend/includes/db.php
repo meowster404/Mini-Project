@@ -1,25 +1,20 @@
 <?php
-// Database connection parameters
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "farm_fresh_market";
+$host = 'localhost';
+$username = 'root';
+$password = '';
+$database = 'farm_fresh_market';
 
-try {
-    // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
+// Create connection
+$conn = mysqli_connect($host, $username, $password, $database);
 
-    // Check connection
-    if ($conn->connect_error) {
-        throw new Exception("Connection failed: " . $conn->connect_error);
-    }
-
-    // Set character set
-    if (!$conn->set_charset("utf8")) {
-        throw new Exception("Error loading character set utf8: " . $conn->error);
-    }
-} catch (Exception $e) {
-    // Log error and display user-friendly message
-    error_log($e->getMessage());
-    die("We're experiencing technical difficulties. Please try again later.");
+// Check connection
+if (!$conn) {
+    die(json_encode([
+        'success' => false,
+        'message' => 'Database connection error: ' . mysqli_connect_error()
+    ]));
 }
+
+// Set charset to utf8
+mysqli_set_charset($conn, "utf8");
+?>

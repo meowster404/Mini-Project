@@ -1,14 +1,17 @@
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelector(".shop-button").addEventListener("click", function (event) {
-        event.preventDefault(); // Prevent default link behavior
+        event.preventDefault();
 
-        // Simulating session check (Replace this with actual session logic)
-        let userSession = sessionStorage.getItem("userLoggedIn");
+        // Check if user is logged in
+        let userSession = localStorage.getItem("user");
+        let userType = localStorage.getItem("userType");
 
-        if (userSession === "true") {
-            window.location.href = "product-page.php"; // Redirect to product page
+        if (userSession) {
+            // If user is logged in, redirect to products page
+            window.location.href = "products.html";
         } else {
-            window.location.href = "login-signup.php"; // Redirect to login/signup page
+            // If user is not logged in, redirect to auth page
+            window.location.href = "auth.html";
         }
     });
 });

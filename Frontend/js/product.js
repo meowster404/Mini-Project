@@ -169,6 +169,7 @@ function renderProducts(products) {
     addProductCardEventListeners();
 }
 
+// In the createProductCard function:
 function createProductCard(product) {
     const isInCart = cart.some(item => item.id === product.id);
     const productCard = document.createElement('div');
@@ -179,7 +180,7 @@ function createProductCard(product) {
         <div class="product-image">
             ${product.is_organic ? '<span class="badge organic-badge">Organic</span>' : ''}
             ${product.discount > 0 ? `<span class="badge discount-badge">${product.discount}% OFF</span>` : ''}
-            <img src="${product.image}" alt="${product.name}">
+            <img src="${product.image}" alt="${product.name}" onerror="this.onerror=null;">
         </div>
         <div class="product-info">
             <h3 class="product-name">${product.name}</h3>
@@ -233,7 +234,7 @@ function addProductCardEventListeners() {
     document.querySelectorAll('.view-cart-btn').forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = '../../Backend/php/cart.php';
+            window.location.href = 'cart.html'; // Updated link
         });
     });
 }
@@ -246,23 +247,27 @@ function addToCart(productId, quantity = 1) {
         return;
     }
     
-    // First update localStorage
+    // Check if item already exists in cart
     const existingItem = cart.find(item => item.id === parseInt(productId));
     if (existingItem) {
-        existingItem.quantity += quantity;
-    } else {
-        cart.push({ 
-            id: parseInt(productId), 
-            quantity,
-            name: product.name,
-            price: product.price,
-            image: product.image
-        });
+        // Item already in cart, just show notification
+        showNotification('Item already in cart', 'info');
+        return;
     }
+    
+    // Add new item to cart
+    cart.push({ 
+        id: parseInt(productId), 
+        quantity,
+        name: product.name,
+        price: product.price,
+        image: product.image
+    });
+    
     saveCart();
     updateCartCount();
     
-    // Then send to server
+    // Send to server
     fetch('../../Backend/php/cart.php', {
         method: 'POST',
         headers: {

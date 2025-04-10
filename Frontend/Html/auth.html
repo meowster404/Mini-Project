@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Signup - Farmers Marketplace</title>
+    <link rel="stylesheet" href="../css/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/assets/image/logo.png" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <div class="forms-container">
+            <div class="signin-signup">
+                <!-- Login Form -->
+                <form action="#" class="sign-in-form" id="loginForm">
+                    <h2 class="title">Login</h2>
+                    <div class="user-type-selection">
+                        <label>I am a:</label>
+                        <div class="radio-group">
+                            <input type="radio" id="consumer-login" name="userType" value="consumer" checked>
+                            <label for="consumer-login">Consumer</label>
+                            <input type="radio" id="farmer-login" name="userType" value="farmer">
+                            <label for="farmer-login">Farmer</label>
+                        </div>
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="email" placeholder="Email" name="email" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Password" name="password" required />
+                    </div>
+                    <input type="submit" value="Login" class="btn solid" />
+                </form>
+
+                <!-- Sign Up Form -->
+                <form action="#" class="sign-up-form" id="signupForm">
+                    <h2 class="title">Sign up</h2>
+                    <div class="user-type-selection">
+                        <label>I want to register as:</label>
+                        <div class="radio-group">
+                            <input type="radio" id="consumer-signup" name="userType" value="consumer" checked>
+                            <label for="consumer-signup">Consumer</label>
+                            <input type="radio" id="farmer-signup" name="userType" value="farmer">
+                            <label for="farmer-signup">Farmer</label>
+                        </div>
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="text" placeholder="Full Name" name="fullName" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" placeholder="Email" name="email" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" placeholder="Phone Number" name="phone" required />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" placeholder="Password" name="password" required />
+                    </div>
+                    <div class="farmer-fields" style="display: none;">
+                        <div class="input-field">
+                            <i class="fas fa-home"></i>
+                            <input type="text" placeholder="Farm Name" name="farmName" />
+                        </div>
+                        <div class="input-field">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <input type="text" placeholder="Farm Address" name="farmAddress" />
+                        </div>
+                    </div>
+                    <input type="submit" class="btn" value="Sign up" />
+                </form>
+            </div>
+        </div>
+
+        <div class="panels-container">
+            <div class="panel left-panel">
+                <div class="content">
+                    <h3>New here?</h3>
+                    <p>Join our community of farmers and consumers for fresh, locally sourced produce!</p>
+                    <button class="btn transparent" id="sign-up-btn">Sign up</button>
+                </div>
+                <img src="/assets/image/login.png" class="image" alt="" />
+            </div>
+            <div class="panel right-panel">
+                <div class="content">
+                    <h3>Already have an account?</h3>
+                    <p>Login to access fresh produce and connect with local farmers!</p>
+                    <button class="btn transparent" id="sign-in-btn">Sign in</button>
+                </div>
+                <img src="/assets/image/register.png" class="image" alt="" />
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+</body>
+</html>
