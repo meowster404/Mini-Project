@@ -50,7 +50,7 @@ const dummyProducts = [
         category: "vegetables",
         farming_method: "organic",
         farm_name: "Green Valley Farms",
-        image: "../..assets/image/p/spinach.jpg",
+        image: "../../../assets/image/p/spinach.jpg",
         popularity: 4.6,
         is_organic: true,
         discount: 0,
@@ -64,7 +64,21 @@ const dummyProducts = [
         category: "chicken",
         farming_method: "free-range",
         farm_name: "Sunshine Poultry",
-        image: "../../assets/image/p/chicken.",
+        image: "../../assets/image/p/chicken.webp",
+        popularity: 4.9,
+        is_organic: false,
+        discount: 0,
+        date_added: "2025-03-10"
+    },
+    {
+        id: 6,
+        name: "Fresh Mutton",
+        description: "Premium quality Mutton, raised without antibiotics.",
+        price: 880,
+        category: "Mutton",
+        farming_method: "free-range",
+        farm_name: "None",
+        image: "../../assets/image/p/mutton.webp",
         popularity: 4.9,
         is_organic: false,
         discount: 0,
@@ -72,4 +86,5 @@ const dummyProducts = [
     }
 ];
 
-export {dummyProducts};
+// Add this at the end of the file
+export { dummyProducts };
