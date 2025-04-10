@@ -2,14 +2,25 @@
 CREATE DATABASE IF NOT EXISTS farm_fresh_market;
 USE farm_fresh_market;
 
+-- Create consumers table
+CREATE TABLE IF NOT EXISTS consumers (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(15),
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create farmers table
 CREATE TABLE IF NOT EXISTS farmers (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    farm_name VARCHAR(100) NOT NULL,
-    farmer_name VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     phone VARCHAR(15),
-    address TEXT,
+    password VARCHAR(255) NOT NULL,
+    farm_name VARCHAR(100) NOT NULL,
+    farm_address TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -30,6 +41,30 @@ CREATE TABLE IF NOT EXISTS products (
     FOREIGN KEY (farmer_id) REFERENCES farmers(id)
 );
 
+-- Create orders table
+CREATE TABLE IF NOT EXISTS orders (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    consumer_id INT NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    shipping_address TEXT NOT NULL,
+    order_status ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending',
+    payment_status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (consumer_id) REFERENCES consumers(id)
+);
+
+-- Create cart table
+CREATE TABLE IF NOT EXISTS cart (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    consumer_id INT,
+    product_id INT,
+    quantity INT DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (consumer_id) REFERENCES consumers(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
 -- Create promo_codes table
 CREATE TABLE IF NOT EXISTS promo_codes (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -44,58 +79,26 @@ CREATE TABLE IF NOT EXISTS promo_codes (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create users table
-CREATE TABLE IF NOT EXISTS users (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    full_name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    phone VARCHAR(15),
-    password VARCHAR(255) NOT NULL,
-    user_type ENUM('consumer', 'farmer') NOT NULL,
-    farm_name VARCHAR(100),
-    farm_address TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- Insert sample data
+INSERT INTO consumers (full_name, email, phone, password) 
+VALUES ('Test Consumer', 'consumer@test.com', '+91 1234567890', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
 
--- Create orders table
-CREATE TABLE IF NOT EXISTS orders (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    total_amount DECIMAL(10,2) NOT NULL,
-    shipping_address TEXT NOT NULL,
-    order_status ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending',
-    payment_status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
+INSERT INTO farmers (name, email, phone, password, farm_name, farm_address) 
+VALUES 
+('John Doe', 'john@greenvalley.com', '1234567890', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Green Valley Farm', 'Green Valley Road'),
+('Jane Smith', 'jane@dairydreams.com', '9876543210', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Dairy Dreams', 'Dairy Lane'),
+('Mike Johnson', 'mike@poultryparadise.com', '5555555555', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Poultry Paradise', 'Paradise Street');
 
--- Create order_items table
-CREATE TABLE IF NOT EXISTS order_items (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    order_id INT NOT NULL,
-    product_id INT NOT NULL,
-    quantity INT NOT NULL,
-    price_at_time DECIMAL(10,2) NOT NULL,
-    FOREIGN KEY (order_id) REFERENCES orders(id),
-    FOREIGN KEY (product_id) REFERENCES products(id)
-);
+-- Insert sample promo codes
+INSERT INTO promo_codes (code, discount_type, discount_value, min_order_value, start_date, end_date, uses_left) 
+VALUES
+('WELCOME10', 'percentage', 10, 500, '2024-01-01', '2024-12-31', 100),
+('FRESH50', 'fixed', 50, 1000, '2024-01-01', '2024-12-31', 50);
 
--- Create cart table
-CREATE TABLE IF NOT EXISTS cart (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    user_id INT,
-    product_id INT,
-    quantity INT DEFAULT 1,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (product_id) REFERENCES products(id)
-);
+-- Add cart index
+CREATE INDEX idx_cart_consumer ON cart(consumer_id);
 
--- Index for faster cart retrieval
-CREATE INDEX idx_cart_user ON cart(user_id);
-
--- Trigger to check stock availability before insert/update
+-- Add stock check trigger
 DELIMITER //
 CREATE TRIGGER check_stock_before_cart
 BEFORE INSERT ON cart
@@ -112,14 +115,3 @@ BEGIN
     END IF;
 END;//
 DELIMITER ;
-
--- Insert sample farmer
-INSERT INTO farmers (farm_name, farmer_name, email, phone, address) 
-VALUES 
-    ('Green Valley Farm', 'John Doe', 'john@greenvalley.com', '1234567890', 'Green Valley Road'),
-    ('Dairy Dreams', 'Jane Smith', 'jane@dairydreams.com', '9876543210', 'Dairy Lane'),
-    ('Poultry Paradise', 'Mike Johnson', 'mike@poultryparadise.com', '5555555555', 'Paradise Street');
--- Insert sample promo code
-INSERT INTO promo_codes (code, discount_type, discount_value, min_order_value, start_date, end_date, uses_left) VALUES
-('WELCOME10', 'percentage', 10, 500, '2024-01-01', '2024-12-31', 100),
-('FRESH50', 'fixed', 50, 1000, '2024-01-01', '2024-12-31', 50);

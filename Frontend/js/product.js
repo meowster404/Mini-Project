@@ -180,7 +180,7 @@ function createProductCard(product) {
         <div class="product-image">
             ${product.is_organic ? '<span class="badge organic-badge">Organic</span>' : ''}
             ${product.discount > 0 ? `<span class="badge discount-badge">${product.discount}% OFF</span>` : ''}
-            <img src="${product.image}" alt="${product.name}" onerror="this.onerror=null;">
+            <img src="${product.image}" alt="${product.name}">
         </div>
         <div class="product-info">
             <h3 class="product-name">${product.name}</h3>

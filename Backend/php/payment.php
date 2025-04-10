@@ -1,13 +1,44 @@
 <?php
-// Initialize variables
-$errors = [];
-$orderComplete = false;
-
 // Start session to access cart data
 session_start();
 
-// Remove database connection
-// include __DIR__ . '../includes/db.php';
+// Check if cart exists in session - MOVED TO TOP OF SCRIPT
+if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
+    // Redirect to cart if no items
+    header("Location: cart.php");
+    exit;
+}
+
+// Initialize variables
+$errors = [];
+$orderComplete = false;
+$orderItems = [];
+$subtotal = 0;
+$shipping = 0;
+
+// Check for completed order
+if (isset($_SESSION['order_complete'])) {
+    $orderComplete = true;
+    unset($_SESSION['order_complete']);
+}
+
+// Process the cart items
+foreach ($_SESSION['cart'] as $item) {
+    $orderItems[] = [
+        'id' => $item['id'],
+        'name' => $item['name'],
+        'quantity' => $item['quantity'],
+        'price' => $item['price'] * $item['quantity']
+    ];
+    
+    $subtotal += $item['price'] * $item['quantity'];
+}
+
+// Calculate shipping
+$shipping = ($subtotal >= 200) ? 0 : 50;
+
+// Calculate total
+$total = $subtotal + $shipping;
 
 // Process form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -34,14 +65,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     if (empty($_POST['zipCode'])) {
         $errors['zipCode'] = 'ZIP code is required';
-    } elseif (!preg_match('/^\d{5}(-\d{4})?$/', $_POST['zipCode'])) {
-        $errors['zipCode'] = 'Invalid ZIP code format';
+    } elseif (!preg_match('/^\d{6}$/', $_POST['zipCode'])) {
+        $errors['zipCode'] = 'Invalid PIN code format';
     }
     
     if (empty($_POST['phone'])) {
         $errors['phone'] = 'Phone number is required';
-    } elseif (!preg_match('/^\(\d{3}\) \d{3}-\d{4}$|^\d{3}-\d{3}-\d{4}$/', $_POST['phone'])) {
-        $errors['phone'] = 'Invalid phone number format';
+    } elseif (!preg_match('/^\+91\s\d{10}$/', $_POST['phone'])) {
+        $errors['phone'] = 'Invalid phone number format (should be +91 followed by 10 digits)';
     }
     
     // Validate payment information if credit card is selected
@@ -65,8 +96,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             // Check if card is expired
             list($month, $year) = explode('/', $_POST['expiryDate']);
-            $expiry = \DateTime::createFromFormat('my', $month . $year);
-            $now = new \DateTime();
+            $expiry = DateTime::createFromFormat('my', $month . $year);
+            $now = new DateTime();
             if ($expiry < $now) {
                 $errors['expiryDate'] = 'Card has expired';
             }
@@ -85,17 +116,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // If no errors, process the order
     if (empty($errors)) {
-        // In a real application, you would:
-        // 1. Save order to database
-        // 2. Process payment
-        // 3. Send confirmation email
-        // 4. Clear cart
+        // Store order details in session before clearing cart
+        $_SESSION['last_order'] = [
+            'items' => $orderItems,
+            'total' => $total,
+            'shipping' => $shipping
+        ];
         
-        // For demo purposes, just set order as complete
-        $orderComplete = true;
+        // Set order as complete
+        $_SESSION['order_complete'] = true;
+        $_SESSION['order_message'] = "Thank you for your purchase! Your order has been placed successfully.";
         
         // Clear the cart
         unset($_SESSION['cart']);
+        
+        // Redirect to the same page to show confirmation
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
     }
 }
 
@@ -132,35 +169,6 @@ function validateCreditCard($number) {
     // If the total is divisible by 10, the number is valid
     return ($total % 10 == 0);
 }
-
-// Modify the cart items processing to use session data only
-$orderItems = [];
-$subtotal = 0;
-$shipping = 0;
-
-// Check if cart exists in session
-if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
-    foreach ($_SESSION['cart'] as $item) {
-        $orderItems[] = [
-            'id' => $item['id'],
-            'name' => $item['name'],
-            'quantity' => $item['quantity'],
-            'price' => $item['price'] * $item['quantity']
-        ];
-        
-        $subtotal += $item['price'] * $item['quantity'];
-    }
-    
-    // Use the same shipping logic
-    $shipping = ($subtotal >= 200) ? 0 : 50;
-} else {
-    // Redirect to cart if no items
-    header("Location: cart.php");
-    exit;
-}
-
-// Calculate total
-$total = $subtotal + $shipping;
 ?>
 
 <!DOCTYPE html>
@@ -180,8 +188,21 @@ $total = $subtotal + $shipping;
                 <h2>Order Placed Successfully!</h2>
                 <p>Thank you for your purchase. Your order has been received and is being processed.</p>
                 <p>A confirmation email has been sent to your email address.</p>
-                <a href="index.php" class="btn-continue">Continue Shopping</a>
+                <a href="../../Frontend/Html/products.html" class="btn-continue">Continue Shopping</a>
             </div>
+            <script>
+                // Make sure cart is empty before redirecting
+                <?php 
+                // Ensure cart is empty
+                echo "// Cart has been emptied";
+                unset($_SESSION['cart']); 
+                ?>
+                
+                // Redirect after 5 seconds
+                setTimeout(function() {
+                    window.location.href = '../../Frontend/Html/products.html';
+                }, 5000);
+            </script>
         <?php else: ?>
             <a href="cart.php" class="back-link">
                 <i class="fas fa-arrow-left"></i> Back to Cart
@@ -324,36 +345,32 @@ $total = $subtotal + $shipping;
                         <div class="card">
                             <h2>Order Summary</h2>
 
-                            <?php if (empty($orderItems)): ?>
-                                <p>Your cart is empty. <a href="products.php">Continue shopping</a></p>
-                            <?php else: ?>
-                                <?php foreach ($orderItems as $item): ?>
-                                    <div class="order-item">
-                                        <span class="item-name"><?php echo htmlspecialchars($item['name']); ?> ×<?php echo $item['quantity']; ?></span>
-                                        <span>₹<?php echo number_format($item['price'], 2); ?></span>
-                                    </div>
-                                <?php endforeach; ?>
-
-                                <div class="divider"></div>
-
+                            <?php foreach ($orderItems as $item): ?>
                                 <div class="order-item">
-                                    <span>Subtotal</span>
-                                    <span>₹<?php echo number_format($subtotal, 2); ?></span>
+                                    <span class="item-name"><?php echo htmlspecialchars($item['name']); ?> ×<?php echo $item['quantity']; ?></span>
+                                    <span>₹<?php echo number_format($item['price'], 2); ?></span>
                                 </div>
-                                <div class="order-item">
-                                    <span>Shipping</span>
-                                    <span><?php echo $shipping > 0 ? '₹' . number_format($shipping, 2) : 'Free'; ?></span>
-                                </div>
+                            <?php endforeach; ?>
 
-                                <div class="divider"></div>
+                            <div class="divider"></div>
 
-                                <div class="total-row">
-                                    <span>Total</span>
-                                    <span>₹<?php echo number_format($total, 2); ?></span>
-                                </div>
+                            <div class="order-item">
+                                <span>Subtotal</span>
+                                <span>₹<?php echo number_format($subtotal, 2); ?></span>
+                            </div>
+                            <div class="order-item">
+                                <span>Shipping</span>
+                                <span><?php echo $shipping > 0 ? '₹' . number_format($shipping, 2) : 'Free'; ?></span>
+                            </div>
 
-                                <button type="submit" class="btn-place-order">Place Order</button>
-                            <?php endif; ?>
+                            <div class="divider"></div>
+
+                            <div class="total-row">
+                                <span>Total</span>
+                                <span>₹<?php echo number_format($total, 2); ?></span>
+                            </div>
+
+                            <button type="submit" class="btn-place-order">Place Order</button>
                         </div>
                     </div>
                 </div>
@@ -407,33 +424,29 @@ $total = $subtotal + $shipping;
                 e.target.value = value.substring(0, 5);
             });
 
-            // Format phone number
+            // Format phone number for Indian format (+91 XXXXXXXXXX)
             const phoneInput = document.getElementById('phone');
             phoneInput.addEventListener('input', function(e) {
                 let value = e.target.value.replace(/\D/g, '');
-                let formattedValue = '';
                 
+                // Remove the +91 prefix if it exists in the number
+                if (value.startsWith('91')) {
+                    value = value.substring(2);
+                }
+                
+                let formattedValue = '';
                 if (value.length > 0) {
-                    formattedValue = '(' + value.substring(0, 3);
-                    if (value.length > 3) {
-                        formattedValue += ') ' + value.substring(3, 6);
-                        if (value.length > 6) {
-                            formattedValue += '-' + value.substring(6, 10);
-                        }
-                    }
+                    formattedValue = '+91 ' + value.substring(0, 10);
                 }
                 
                 e.target.value = formattedValue;
             });
 
-            // Format ZIP code
+            // Format ZIP code for Indian PIN code (6 digits)
             const zipCodeInput = document.getElementById('zipCode');
             zipCodeInput.addEventListener('input', function(e) {
                 let value = e.target.value.replace(/\D/g, '');
-                if (value.length > 5) {
-                    value = value.substring(0, 5) + '-' + value.substring(5, 9);
-                }
-                e.target.value = value.substring(0, 10);
+                e.target.value = value.substring(0, 6);
             });
         });
     </script>
