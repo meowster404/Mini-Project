@@ -3,7 +3,7 @@ session_start();
 
 // Dummy farmer data for header
 $farmer = [
-    'name' => 'John Doe',
+    'name' => 'Ganesh Dubey',
     'profile_image' => null
 ];
 ?>
@@ -22,7 +22,7 @@ $farmer = [
     <div class="app-container">
         <aside class="sidebar">
             <div class="logo-container">
-            <a href="#home"><img src="../../assets/image/logo.png" alt="Farmers Marketplace Logo" height="50"></a>
+            <a href="../../Frontend/Html/Index.html"><img src="../../assets/image/logo.png" alt="Farmers Marketplace Logo" height="50"></a>
             </div>
             <nav class="main-nav">
                 <ul>

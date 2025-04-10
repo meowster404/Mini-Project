@@ -41,7 +41,7 @@ $last_month = date('Y-m', strtotime('-1 month'));
     <div class="app-container">
         <aside class="sidebar">
             <div class="logo-container">
-            <a href="#home"><img src="../../assets/image/logo.png" alt="Farmers Marketplace Logo" height="50"></a>
+            <a href="../../Frontend/Html/Index.html"><img src="../../assets/image/logo.png" alt="Farmers Marketplace Logo" height="50"></a>
             </div>
             <nav class="main-nav">
                 <ul>
@@ -76,7 +76,7 @@ $last_month = date('Y-m', strtotime('-1 month'));
                     </button>
                     <div class="user-profile">
                         <img src="assets/images/default-profile.jpg" alt="User profile" class="profile-img">
-                        <span class="user-name">John Doe</span>
+                        <span class="user-name">Ganesh Dubey</span>
                     </div>
                 </div>
             </header>

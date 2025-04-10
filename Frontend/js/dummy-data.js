@@ -70,93 +70,9 @@ const dummyProducts = [
         discount: 0,
         date_added: "2025-03-10"
     },
-    {
-        id: 6,
-        name: "Fresh Mutton",
-        description: "Premium quality Mutton, raised without antibiotics.",
-        price: 880,
-        category: "mutton",
-        farming_method: "free-range",
-        farm_name: "None",
-        image: "../../assets/image/p/mutton.webp",
-        popularity: 4.9,
-        is_organic: false,
-        discount: 0,
-        date_added: "2025-03-10"
-    },
-    {
-        id: 6,
-        name: "Fresh Organic Tomatoes",
-        description: "Juicy, vine-ripened organic tomatoes. Perfect for salads and cooking.",
-        price: 40,
-        category: "vegetables",
-        farming_method: "organic",
-        farm_name: "Green Valley Farms",
-        image: "../../assets/image/p/Tomato.jpg",  // Changed path
-        popularity: 4.8,
-        is_organic: true,
-        discount: 10,
-        date_added: "2025-02-15"
-    },
-    {
-        id: 7,
-        name: "Crisp Red Apples",
-        description: "Sweet and crisp red apples. Great for snacking or baking.",
-        price: 120,
-        category: "fruits",
-        farming_method: "conventional",
-        farm_name: "Orchard Hills",
-        image: "../../assets/image/p/Apple.webp",  // Changed path
-        popularity: 4.5,
-        is_organic: false,
-        discount: 0,
-        date_added: "2025-02-20"
-    },
-    {
-        id: 8,
-        name: "Free-Range Eggs",
-        description: "Farm-fresh eggs from free-range chickens. Rich in flavor and nutrition.",
-        price: 80,
-        category: "eggs",
-        farming_method: "free-range",
-        farm_name: "Happy Hen Farm",
-        image: "../../assets/image/p/Brown-Eggs.webp",
-        popularity: 4.7,
-        is_organic: true,
-        discount: 5,
-        date_added: "2025-03-01"
-    },
-    {
-        id: 9,
-        name: "Organic Spinach",
-        description: "Nutrient-rich organic spinach leaves. Perfect for salads and cooking.",
-        price: 35,
-        category: "vegetables",
-        farming_method: "organic",
-        farm_name: "Green Valley Farms",
-        image: "../../assets/image/p/spinach.jpg",
-        popularity: 4.6,
-        is_organic: true,
-        discount: 0,
-        date_added: "2025-03-05"
-    },
-    {
-        id: 10,
-        name: "Fresh Chicken",
-        description: "Premium quality chicken, raised without antibiotics.",
-        price: 180,
-        category: "chicken",
-        farming_method: "free-range",
-        farm_name: "Sunshine Poultry",
-        image: "../../assets/image/p/chicken.webp",
-        popularity: 4.9,
-        is_organic: false,
-        discount: 0,
-        date_added: "2025-03-10"
-    },
     // Added Vegetables
     {
-        id: 11,
+        id: 6,
         name: "Fresh Cauliflower",
         description: "Crisp, white cauliflower with tender florets. Excellent for curries and roasting.",
         price: 45,
@@ -170,7 +86,7 @@ const dummyProducts = [
         date_added: "2025-03-15"
     },
     {
-        id: 12,
+        id: 7,
         name: "Ladyfinger",
         description: "Dark green, fresh ladyfinger loaded with vitamins and minerals.",
         price: 30,
@@ -184,7 +100,7 @@ const dummyProducts = [
         date_added: "2025-03-12"
     },
     {
-        id: 13,
+        id: 8,
         name: "Crisp Cabbage",
         description: "Fresh, tightly packed cabbage heads. Great for salads, stir-fries, and fermented dishes.",
         price: 35,
@@ -198,7 +114,7 @@ const dummyProducts = [
         date_added: "2025-03-18"
     },
     {
-        id: 14,
+        id: 9,
         name: "Bell Capsicum Mix",
         description: "Colorful mix of red, yellow, and green bell peppers. Sweet and crunchy, perfect for any dish.",
         price: 60,
@@ -212,7 +128,7 @@ const dummyProducts = [
         date_added: "2025-03-20"
     },
     {
-        id: 15,
+        id: 10,
         name: "Green Chilli",
         description: "Spicy green chillies that add the perfect heat to any dish. Locally grown and harvested.",
         price: 20,
@@ -226,7 +142,7 @@ const dummyProducts = [
         date_added: "2025-03-14"
     },
     {
-        id: 16,
+        id: 11,
         name: "Fresh Green Peas",
         description: "Sweet and tender green peas. Versatile addition to many recipes and rich in protein.",
         price: 50,
@@ -240,7 +156,7 @@ const dummyProducts = [
         date_added: "2025-03-22"
     },
     {
-        id: 17,
+        id: 12,
         name: "Fresh Garlic Bulbs",
         description: "Aromatic garlic bulbs with intense flavor. Essential for countless recipes.",
         price: 25,
@@ -254,7 +170,7 @@ const dummyProducts = [
         date_added: "2025-03-10"
     },
     {
-        id: 18,
+        id: 13,
         name: "Farm-Fresh Carrots",
         description: "Plump, juicy carrots with rich flavor. Locally grown and perfect for salads.",
         price: 35,
@@ -269,7 +185,7 @@ const dummyProducts = [
     },
     // Added Fruits
     {
-        id: 19,
+        id: 14,
         name: "Organic Alphonso Mangoes",
         description: "Premium Alphonso mangoes known for their rich flavor and sweet aroma. The king of fruits.",
         price: 450,
@@ -283,7 +199,7 @@ const dummyProducts = [
         date_added: "2025-04-01"
     },
     {
-        id: 20,
+        id: 15,
         name: "Fresh Green Grapes",
         description: "Seedless green grapes with a crisp texture and sweet flavor. Perfect healthy snack.",
         price: 120,
@@ -297,7 +213,7 @@ const dummyProducts = [
         date_added: "2025-03-28"
     },
     {
-        id: 21,
+        id: 16,
         name: "Juicy Watermelon",
         description: "Sweet, refreshing watermelon with bright red flesh. Perfect for hot summer days.",
         price: 80,
@@ -311,7 +227,7 @@ const dummyProducts = [
         date_added: "2025-04-02"
     },
     {
-        id: 22,
+        id: 17,
         name: "Ripe Bananas",
         description: "Sweet, energy-packed bananas. Convenient and nutritious snack for all ages.",
         price: 60,
@@ -325,7 +241,7 @@ const dummyProducts = [
         date_added: "2025-03-25"
     },
     {
-        id: 23,
+        id: 18,
         name: "Premium Avocados",
         description: "Creamy, nutrient-rich avocados. Perfect for salads, sandwiches, and making guacamole.",
         price: 180,
@@ -339,7 +255,7 @@ const dummyProducts = [
         date_added: "2025-03-30"
     },
     {
-        id: 24,
+        id: 19,
         name: "Sweet Chiku (Sapodilla)",
         description: "Brown, sweet fruit with a grainy texture. Rich in natural sugars and dietary fiber.",
         price: 100,
@@ -353,7 +269,7 @@ const dummyProducts = [
         date_added: "2025-04-04"
     },
     {
-        id: 25,
+        id: 20,
         name: "Exotic Dragon Fruit",
         description: "Vibrant pink exterior with white flesh and black seeds. Mildly sweet with a refreshing taste.",
         price: 220,
@@ -367,7 +283,7 @@ const dummyProducts = [
         date_added: "2025-04-05"
     },
     {
-        id: 26,
+        id: 21,
         name: "Ripe Papaya",
         description: "Sweet, orange-fleshed papaya rich in vitamins and digestive enzymes.",
         price: 90,
@@ -382,7 +298,7 @@ const dummyProducts = [
     },
     // Added Dairy Products
     {
-        id: 27,
+        id: 22,
         name: "Fresh Cow Milk",
         description: "Pure, pasteurized cow milk. Rich in calcium and protein, perfect for daily consumption.",
         price: 65,
@@ -396,7 +312,7 @@ const dummyProducts = [
         date_added: "2025-03-20"
     },
     {
-        id: 28,
+        id: 23,
         name: "Premium Buffalo Milk",
         description: "Creamy buffalo milk with higher fat content. Ideal for making rich dairy products at home.",
         price: 85,
@@ -410,7 +326,7 @@ const dummyProducts = [
         date_added: "2025-03-22"
     },
     {
-        id: 29,
+        id: 24,
         name: "Pure Desi Ghee",
         description: "Traditional clarified ghee made from cow's milk. Rich aroma and authentic taste.",
         price: 550,
@@ -424,7 +340,7 @@ const dummyProducts = [
         date_added: "2025-03-15"
     },
     {
-        id: 30,
+        id: 25,
         name: "Fresh Dahi (Yogurt)",
         description: "Creamy, homestyle yogurt with live cultures. Perfect for meals or making lassi.",
         price: 40,
@@ -438,7 +354,7 @@ const dummyProducts = [
         date_added: "2025-03-25"
     },
     {
-        id: 31,
+        id: 26,
         name: "Traditional Lassi",
         description: "Refreshing yogurt-based drink available in sweet and salted varieties. Perfect summer refreshment.",
         price: 30,
@@ -452,7 +368,7 @@ const dummyProducts = [
         date_added: "2025-04-01"
     },
     {
-        id: 32,
+        id: 27,
         name: "Sweet Shrikhand",
         description: "Traditional sweetened strained yogurt dessert(shrikhand) with saffron and cardamom. Rich and creamy.",
         price: 120,
@@ -466,7 +382,7 @@ const dummyProducts = [
         date_added: "2025-03-28"
     },
     {
-        id: 33,
+        id: 28,
         name: "Farm Fresh Butter",
         description: "Creamy, salted butter made from pure cow's milk. Perfect for cooking and spreading.",
         price: 95,
@@ -481,5 +397,4 @@ const dummyProducts = [
     }
 ];
 
-// Add this at the end of the file
-export { dummyProducts };
+export {dummyProducts};
